@@ -1,1 +1,444 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adey Bonda · Owner Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f4f7fc 0%, #e8f0f8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 40px;
+            padding: 40px 32px 36px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid #e7eef6;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo / Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1f7b9e, #14607e);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 2.8rem;
+            color: white;
+            box-shadow: 0 8px 24px rgba(31,123,158,0.25);
+        }
+
+        .login-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0b2a3b;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            color: #6f8fa8;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #1d4058;
+            margin-bottom: 6px;
+        }
+
+        .form-group label i {
+            color: #1f7b9e;
+            margin-right: 6px;
+            width: 16px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            color: #8aaec9;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 46px;
+            border: 2px solid #d6e1ed;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: 0.2s;
+            background: #fafcfe;
+            color: #0b2a3b;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #1f7b9e;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(31,123,158,0.1);
+            background: white;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #a8bccf;
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 36px;
+            color: #8aaec9;
+            cursor: pointer;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            padding: 4px;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: #1f7b9e;
+        }
+
+        /* Login Button */
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #1f7b9e, #14607e);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(31,123,158,0.3);
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(31,123,158,0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .login-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        .login-btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error Message */
+        #error-displayer {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: #fee8e8;
+            color: #c0392b;
+            font-size: 0.9rem;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #fdd0d0;
+            animation: shake 0.3s ease;
+        }
+
+        #error-displayer.show {
+            display: flex;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        #error-displayer i {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 24px;
+            color: #8aaec9;
+            font-size: 0.85rem;
+        }
+
+        .login-footer i {
+            color: #1f7b9e;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 32px 20px 28px;
+                border-radius: 28px;
+            }
+            .logo-icon {
+                width: 64px;
+                height: 64px;
+                font-size: 2.2rem;
+                border-radius: 20px;
+            }
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+            .input-wrapper input {
+                padding: 12px 14px 12px 42px;
+                font-size: 0.95rem;
+            }
+            .login-btn {
+                padding: 14px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="logo-icon">
+                <i class="fas fa-store-alt"></i>
+            </div>
+            <h1>Adey Bonda</h1>
+            <p>Owner Login · Secure Access</p>
+        </div>
+
+        <!-- Form -->
+        <form id="loginForm" autocomplete="off">
+            <div class="form-group">
+                <label><i class="fas fa-id-card"></i> Owner ID</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input id="id-input" type="number" placeholder="Enter your owner ID" autofocus />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-key"></i>
+                    <input id="password-input" type="password" placeholder="Enter your password" />
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" id="doneBtn" class="login-btn">
+                <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Sign In</span>
+                <span class="spinner"></span>
+            </button>
+        </form>
+
+        <!-- Error Display -->
+        <div id="error-displayer">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="error-text"></span>
+        </div>
+
+        <!-- Footer -->
+        <div class="login-footer">
+            <i class="fas fa-shield-alt"></i> Secure · Owner Only
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
+            authDomain: "adey-bonda.firebaseapp.com",
+            projectId: "adey-bonda",
+            storageBucket: "adey-bonda.firebasestorage.app",
+            messagingSenderId: "820555835547",
+            appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const doneBtn = document.getElementById("doneBtn");
+        const idInput = document.getElementById("id-input");
+        const passwordInput = document.getElementById("password-input");
+        const errorDisplayer = document.getElementById("error-displayer");
+        const errorText = document.getElementById("error-text");
+        const togglePassword = document.getElementById("togglePassword");
+        const loginForm = document.getElementById("loginForm");
+
+        let rightId = "";
+        let rightPassword = "";
+
+        // Load credentials
+        async function loadCredentials() {
+            try {
+                const snapshotId = await get(ref(db, "AdeyBonda/Owner/Id"));
+                if (snapshotId.exists()) rightId = snapshotId.val();
+                else console.log("No ID found");
+
+                const snapshotPass = await get(ref(db, "AdeyBonda/Owner/Password"));
+                if (snapshotPass.exists()) rightPassword = snapshotPass.val();
+                else console.log("No Password found");
+            } catch (error) {
+                showError("Failed to load credentials. Please try again.");
+            }
+        }
+
+        // Show error
+        function showError(message) {
+            errorText.textContent = message;
+            errorDisplayer.classList.add("show");
+            setTimeout(() => {
+                errorDisplayer.classList.remove("show");
+            }, 4000);
+        }
+
+        // Toggle password visibility
+        togglePassword.addEventListener("click", () => {
+            const type = passwordInput.type === "password" ? "text" : "password";
+            passwordInput.type = type;
+            togglePassword.querySelector("i").className = type === "password" ? "fas fa-eye" : "fas fa-eye-slash";
+        });
+
+        // Handle login
+        async function handleLogin(e) {
+            e.preventDefault();
+
+            const id = idInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            // Validate
+            if (!id || !password) {
+                showError("Please enter both ID and password");
+                if (!id) idInput.focus();
+                else passwordInput.focus();
+                return;
+            }
+
+            // Show loading
+            doneBtn.classList.add("loading");
+            doneBtn.disabled = true;
+            errorDisplayer.classList.remove("show");
+
+            // Simulate delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // Check credentials            
+            if (id == rightId && password == rightPassword) {
+                // Success - redirect                
+                window.location.href = "home.html";
+            } else {
+                showError("Invalid ID or Password. Please try again.");
+                doneBtn.classList.remove("loading");
+                doneBtn.disabled = false;
+                passwordInput.value = "";
+                passwordInput.focus();
+            }
+        }
+
+        // Event listeners
+        loginForm.addEventListener("submit", handleLogin);
+
+        // Enter key support
+        idInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") passwordInput.focus();
+        });
+
+        passwordInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") loginForm.dispatchEvent(new Event("submit"));
+        });
+
+        // Load credentials on page load
+        loadCredentials();
+
+        // Focus on ID input
+        setTimeout(() => idInput.focus(), 300);
+    </script>
+</body>
+</html>
