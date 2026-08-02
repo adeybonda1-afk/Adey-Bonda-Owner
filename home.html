@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner · Adey Bonda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f7fc;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eef5fb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        header h2 {
+            color: #0b2a3b;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h2 i {
+            color: #1f7b9e;
+            font-size: 1.8rem;
+        }
+
+        .header-badge {
+            background: #e1edf7;
+            color: #1f5a7a;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Stats Cards */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            padding: 20px 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 20px;
+            border: 1px solid #e7eef6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 2rem;
+            color: #1f7b9e;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #0b2a3b;
+        }
+
+        .stat-card .stat-label {
+            color: #6f8fa8;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .stat-card.users .stat-icon { color: #8e44ad; }
+        .stat-card.products .stat-icon { color: #e67e22; }
+        .stat-card.selled .stat-icon { color: #27ae60; }
+
+        /* Orders Section */
+        .orders-section {
+            padding: 0 24px 24px;
+        }
+
+        .section-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0b2a3b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header h3 i {
+            color: #1f7b9e;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .controls select, .controls input {
+            padding: 10px 16px;
+            border: 1px solid #d6e1ed;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: 0.2s;
+            font-family: inherit;
+            color: #1d4058;
+        }
+
+        .controls select:focus, .controls input:focus {
+            border-color: #1f7b9e;
+            box-shadow: 0 0 0 3px rgba(31,123,158,0.1);
+        }
+
+        .controls input::placeholder {
+            color: #a8bccf;
+        }
+
+        /* Orders Grid */
+        .orders-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .order-item {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 20px;
+            border: 1px solid #e7eef6;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+        .order-item:hover {
+            border-color: #cbddee;
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+        }
+
+        .order-thumbnail {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: #eaf1f9;
+            flex-shrink: 0;
+        }
+
+        .order-thumbnail-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: #eaf1f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6f8fa8;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .order-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .order-info .order-name {
+            font-weight: 600;
+            color: #0b2a3b;
+            font-size: 1rem;
+        }
+
+        .order-info .order-meta {
+            font-size: 0.85rem;
+            color: #6f8fa8;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 2px;
+        }
+
+        .order-info .order-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .order-info .order-meta i {
+            color: #1f7b9e;
+            font-size: 0.75rem;
+        }
+
+        .order-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .order-right .order-time {
+            font-size: 0.8rem;
+            color: #6f8fa8;
+        }
+
+        .order-right .order-quantity {
+            font-weight: 700;
+            color: #1f7b9e;
+            font-size: 1.1rem;
+        }
+
+        .order-right .order-quantity span {
+            font-weight: 400;
+            color: #6f8fa8;
+            font-size: 0.8rem;
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+            border: 1px dashed #d6e1ed;
+            color: #6f8fa8;
+        }
+
+        .empty-orders i {
+            font-size: 3rem;
+            opacity: 0.4;
+            margin-bottom: 12px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.08);
+            border-top: 1px solid #eef5fb;
+            z-index: 100;
+        }
+
+        nav a {
+            color: #6f8fa8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        nav a.current {
+            background: #1f7b9e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(31,123,158,0.25);
+        }
+
+        nav a:hover:not(.current) {
+            background: #f0f6fd;
+            color: #1f5a7a;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            header {
+                padding: 16px;
+            }
+            header h2 {
+                font-size: 1.3rem;
+            }
+            .stats-container {
+                padding: 16px;
+                grid-template-columns: 1fr 1fr;
+            }
+            .stat-card {
+                padding: 16px;
+            }
+            .stat-card .stat-number {
+                font-size: 1.6rem;
+            }
+            .orders-section {
+                padding: 0 16px 16px;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls {
+                flex-wrap: wrap;
+            }
+            .controls select, .controls input {
+                flex: 1;
+                min-width: 120px;
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+            .order-item {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+            }
+            .order-right {
+                text-align: left;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                padding-top: 8px;
+                border-top: 1px solid #eef5fb;
+            }
+            nav a {
+                font-size: 0.8rem;
+                padding: 6px 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2><i class="fas fa-store-alt"></i> Adey Bonda</h2>
+        <span class="header-badge"><i class="fas fa-crown"></i> Owner</span>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-container" id="statsContainer">
+        <div class="stat-card users">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-number" id="userCount">0</div>
+            <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card products">
+            <div class="stat-icon"><i class="fas fa-boxes"></i></div>
+            <div class="stat-number" id="productCount">0</div>
+            <div class="stat-label">Total Products</div>
+        </div>
+        <div class="stat-card selled">
+            <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+            <div class="stat-number" id="selledCount">0</div>
+            <div class="stat-label">Products Selled</div>
+        </div>
+    </div>
+
+    <!-- Orders -->
+    <div class="orders-section">
+        <div class="section-header">
+            <h3><i class="fas fa-clipboard-list"></i> Pending Orders</h3>
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="🔍 Search orders..." />
+                <select id="filterType">
+                    <option value="all">All Types</option>
+                    <option value="Shoes">👟 Shoes</option>
+                    <option value="T-Shirt">👕 T-Shirt</option>
+                    <option value="Coat">🧥 Coat</option>
+                    <option value="Sweater">🧶 Sweater</option>
+                    <option value="Pants">👖 Pants</option>
+                    <option value="Hat">🧢 Hat</option>
+                    <option value="Other">📦 Other</option>
+                </select>
+                <select id="filterBrand">
+                    <option value="all">All Brands</option>
+                </select>
+                <select id="sortBy">
+                    <option value="time-desc">⏰ Newest</option>
+                    <option value="time-asc">⏰ Oldest</option>
+                    <option value="name-asc">📝 A → Z</option>
+                    <option value="name-desc">📝 Z → A</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="orders-grid" id="ordersContainer">
+            <div class="empty-orders">
+                <i class="fas fa-inbox"></i>
+                <div>No pending orders</div>
+                <div style="font-size: 0.85rem; margin-top: 4px;">Orders will appear here when customers place them</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="home.html" class="current"><i class="fas fa-home"></i> Home</a>
+        <a href="message.html"><i class="fas fa-comment-dots"></i> Message</a>
+        <a href="analysis.html"><i class="fas fa-chart-bar"></i> Analysis</a>
+        <a href="product input.html"><i class="fas fa-cog"></i> Product Input </a>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
+            authDomain: "adey-bonda.firebaseapp.com",
+            projectId: "adey-bonda",
+            storageBucket: "adey-bonda.firebasestorage.app",
+            messagingSenderId: "820555835547",
+            appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // DOM Elements
+        const userCountEl = document.getElementById('userCount');
+        const productCountEl = document.getElementById('productCount');
+        const selledCountEl = document.getElementById('selledCount');
+        const ordersContainer = document.getElementById('ordersContainer');
+        const searchInput = document.getElementById('searchInput');
+        const filterType = document.getElementById('filterType');
+        const filterBrand = document.getElementById('filterBrand');
+        const sortBy = document.getElementById('sortBy');
+
+        let allOrders = [];
+        let allProducts = {};
+        let brands = new Set();
+
+        // Load stats
+        function loadStats() {
+            // Users count
+            const usersRef = ref(database, 'AdeyBonda/users');
+            onValue(usersRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const count = Object.keys(data).length;
+                    userCountEl.textContent = count;
+                } else {
+                    userCountEl.textContent = '0';
+                }
+            });
+
+            // Products count
+            const productsRef = ref(database, 'AdeyBonda/products');
+            onValue(productsRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const count = Object.keys(data).length;
+                    productCountEl.textContent = count;
+                } else {
+                    productCountEl.textContent = '0';
+                }
+            });
+
+            // Selled products count
+            const selledRef = ref(database, 'AdeyBonda/products/selledProducts');
+            onValue(selledRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    selledCountEl.textContent = data;
+                } else {
+                    selledCountEl.textContent = '0';
+                }
+            });
+        }
+
+        // Load orders
+        function loadOrders() {
+            const ordersRef = ref(database, 'AdeyBonda/pending orders');
+            onValue(ordersRef, async (snapshot) => {
+                const data = snapshot.val();
+                if (!data) {
+                    allOrders = [];
+                    renderOrders();
+                    return;
+                }
+
+                const orderIds = Object.keys(data);
+                allOrders = [];
+
+                for (const orderId of orderIds) {
+                    const order = data[orderId];
+                    const productId = order.productId;
+                    
+                    // Get product info
+                    try {
+                        const productRef = ref(database, `AdeyBonda/products/${productId}/productinformation`);
+                        const productSnap = await get(productRef);
+                        const product = productSnap.val();
+
+                        if (product) {
+                            allOrders.push({
+                                id: orderId,
+                                productId: productId,
+                                howMany: order.HowMany || 1,
+                                timestamp: order.timestamp || Date.now(),
+                                product: product,
+                                name: product.name || 'Unnamed',
+                                type: product.type || 'Other',
+                                brand: product.brand || 'Unbranded',
+                                images: product.images ? product.images.split(',') : []
+                            });
+
+                            // Collect brands for filter
+                            if (product.brand && product.brand !== 'Unbranded') {
+                                brands.add(product.brand);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error loading product:', error);
+                    }
+                }
+
+                // Update brand filter
+                updateBrandFilter();
+                renderOrders();
+            });
+        }
+
+        // Update brand filter dropdown
+        function updateBrandFilter() {
+            const currentVal = filterBrand.value;
+            filterBrand.innerHTML = '<option value="all">All Brands</option>';
+            Array.from(brands).sort().forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b;
+                opt.textContent = b;
+                filterBrand.appendChild(opt);
+            });
+            filterBrand.value = currentVal;
+        }
+
+        // Render orders with filters and sort
+        function renderOrders() {
+            let filtered = [...allOrders];
+
+            // Search
+            const search = searchInput.value.toLowerCase().trim();
+            if (search) {
+                filtered = filtered.filter(o => 
+                    o.name.toLowerCase().includes(search) || 
+                    o.brand.toLowerCase().includes(search)
+                );
+            }
+
+            // Filter by type
+            const type = filterType.value;
+            if (type !== 'all') {
+                filtered = filtered.filter(o => o.type === type);
+            }
+
+            // Filter by brand
+            const brand = filterBrand.value;
+            if (brand !== 'all') {
+                filtered = filtered.filter(o => o.brand === brand);
+            }
+
+            // Sort
+            const sort = sortBy.value;
+            switch (sort) {
+                case 'time-desc':
+                    filtered.sort((a, b) => b.timestamp - a.timestamp);
+                    break;
+                case 'time-asc':
+                    filtered.sort((a, b) => a.timestamp - b.timestamp);
+                    break;
+                case 'name-asc':
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name-desc':
+                    filtered.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                default:
+                    break;
+            }
+
+            // Render
+            if (filtered.length === 0) {
+                ordersContainer.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas fa-inbox"></i>
+                        <div>No orders match your filters</div>
+                        <div style="font-size: 0.85rem; margin-top: 4px;">Try adjusting your search or filters</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(order => {
+                const firstImage = order.images.length > 0 ? order.images[0] : null;
+                const time = new Date(order.timestamp).toLocaleString();
+                const typeIcon = getTypeIcon(order.type);
+
+                html += `
+                    <div class="order-item">
+                        ${firstImage ? 
+                            `<img src="https://lh3.googleusercontent.com/d/${firstImage}" class="order-thumbnail" alt="${order.name}" loading="lazy" />` :
+                            `<div class="order-thumbnail-placeholder"><i class="fas fa-box"></i></div>`
+                        }
+                        <div class="order-info">
+                            <div class="order-name">${order.name}</div>
+                            <div class="order-meta">
+                                <span><i class="fas fa-tag"></i> ${order.brand}</span>
+                                <span><i class="fas fa-layer-group"></i> ${typeIcon} ${order.type}</span>
+                                <span><i class="fas fa-hashtag"></i> #${order.productId.slice(-6)}</span>
+                            </div>
+                        </div>
+                        <div class="order-right">
+                            <div class="order-quantity">${order.howMany} <span>items</span></div>
+                            <div class="order-time"><i class="far fa-clock"></i> ${time}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            ordersContainer.innerHTML = html;
+        }
+
+        // Get type icon
+        function getTypeIcon(type) {
+            const icons = {
+                'Shoes': '👟',
+                'T-Shirt': '👕',
+                'Coat': '🧥',
+                'Sweater': '🧶',
+                'Pants': '👖',
+                'Hat': '🧢',
+                'Other': '📦'
+            };
+            return icons[type] || '📦';
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', renderOrders);
+        filterType.addEventListener('change', renderOrders);
+        filterBrand.addEventListener('change', renderOrders);
+        sortBy.addEventListener('change', renderOrders);
+
+        // Initialize
+        loadStats();
+        loadOrders();
+    </script>
+</body>
+</html>
