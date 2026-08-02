@@ -169,6 +169,45 @@
       margin: 16px 0 6px;
       border-top: 1px solid #e2ebf3;
     }
+
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.08);
+            border-top: 1px solid #eef5fb;
+            z-index: 100;
+        }
+
+        nav a {
+            color: #6f8fa8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        nav a.current {
+            background: #1f7b9e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(31,123,158,0.25);
+        }
+
+        nav a:hover:not(.current) {
+            background: #f0f6fd;
+            color: #1f5a7a;
+        }    
+
     @media (max-width: 480px) {
       .row-duo {
         grid-template-columns: 1fr;
@@ -220,6 +259,13 @@
   <button id="doneBtn">✓ Add product</button>
   <div style="margin-top: 10px; font-size:0.8rem; color:#306f92; text-align:center;">All fields are saved to Firebase · Adey Bonda</div>
 </div>
+
+    <nav>
+        <a href="home.html" ><i class="fas fa-home"></i> Home</a>
+        <a href="message.html"><i class="fas fa-comment-dots"></i> Message</a>
+        <a href="analysis.html"><i class="fas fa-chart-bar"></i> Analysis</a>
+        <a href="product input.html" class="current"><i class="fas fa-cog"></i> Product Input </a>
+    </nav>
 
 <script type="module">
   // ----- Firebase & Drive config -----
