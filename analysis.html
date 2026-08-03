@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis · Adey Bonda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f7fc;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eef5fb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        header h2 {
+            color: #0b2a3b;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h2 i {
+            color: #1f7b9e;
+            font-size: 1.8rem;
+        }
+
+        .header-badge {
+            background: #e1edf7;
+            color: #1f5a7a;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-controls select {
+            padding: 10px 18px;
+            border: 1px solid #d6e1ed;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: 0.2s;
+            font-family: inherit;
+            color: #1d4058;
+        }
+
+        .header-controls select:focus {
+            border-color: #1f7b9e;
+            box-shadow: 0 0 0 3px rgba(31,123,158,0.1);
+        }
+
+        #connectionStatus {
+            font-size: 0.8rem;
+            color: #6f8fa8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #connectionStatus .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        #connectionStatus .dot.online {
+            background: #27ae60;
+        }
+
+        #connectionStatus .dot.loading {
+            background: #f39c12;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            padding: 20px 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 20px;
+            border: 1px solid #e7eef6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0b2a3b;
+        }
+
+        .stat-card .stat-label {
+            color: #6f8fa8;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stat-card.blue .stat-icon { color: #1f7b9e; }
+        .stat-card.green .stat-icon { color: #27ae60; }
+        .stat-card.orange .stat-icon { color: #e67e22; }
+        .stat-card.purple .stat-icon { color: #8e44ad; }
+        .stat-card.red .stat-icon { color: #e74c3c; }
+        .stat-card.teal .stat-icon { color: #1abc9c; }
+
+        /* Analysis Container */
+        .analysis-container {
+            padding: 0 24px 24px;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .analysis-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e7eef6;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .analysis-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .analysis-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0b2a3b;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-card h3 i {
+            color: #1f7b9e;
+        }
+
+        /* Bar rows */
+        .bar-row {
+            display: grid;
+            grid-template-columns: minmax(100px, 1fr) 3fr auto;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f5fb;
+        }
+
+        .bar-row:last-child {
+            border-bottom: none;
+        }
+
+        .bar-row .label {
+            font-size: 0.85rem;
+            color: #1d4058;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bar-track {
+            height: 8px;
+            background: #eef5fb;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1f7b9e, #14607e);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .bar-row .value {
+            font-weight: 600;
+            color: #0b2a3b;
+            font-size: 0.9rem;
+            text-align: right;
+            min-width: 30px;
+        }
+
+        /* Table */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px 8px;
+            color: #6f8fa8;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #eef5fb;
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f0f5fb;
+            color: #1d4058;
+        }
+
+        tr:hover td {
+            background: #f8fbfe;
+        }
+
+        .status-badge {
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-badge.danger {
+            background: #fee8e8;
+            color: #c0392b;
+        }
+
+        .status-badge.warning {
+            background: #fef9f0;
+            color: #e67e22;
+        }
+
+        .status-badge.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .muted {
+            color: #a8bccf;
+            font-size: 0.9rem;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .chart-box {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e7eef6;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .chart-box h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #0b2a3b;
+            margin-bottom: 12px;
+        }
+
+        .chart-box canvas {
+            width: 100% !important;
+            max-height: 250px;
+        }
+
+        /* Toggle button */
+        .toggle-btn {
+            background: white;
+            border: 1px solid #d6e1ed;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #1f7b9e;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 8px 0 16px;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .toggle-btn:hover {
+            background: #f0f6fd;
+            border-color: #1f7b9e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+
+        #advancedAnalytics {
+            display: none;
+        }
+
+        #advancedAnalytics.show {
+            display: grid;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.08);
+            border-top: 1px solid #eef5fb;
+            z-index: 100;
+        }
+
+        nav a {
+            color: #6f8fa8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        nav a.current {
+            background: #1f7b9e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(31,123,158,0.25);
+        }
+
+        nav a:hover:not(.current) {
+            background: #f0f6fd;
+            color: #1f5a7a;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 16px;
+            }
+            .stat-card {
+                padding: 16px;
+            }
+            .stat-card .stat-number {
+                font-size: 1.5rem;
+            }
+            .analysis-container {
+                padding: 0 16px 16px;
+            }
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            header {
+                padding: 16px;
+            }
+            header h2 {
+                font-size: 1.3rem;
+            }
+            .header-controls {
+                width: 100%;
+            }
+            .header-controls select {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                padding: 12px;
+            }
+            .stat-card {
+                padding: 12px 16px;
+            }
+            .stat-card .stat-number {
+                font-size: 1.3rem;
+            }
+            .stat-card .stat-label {
+                font-size: 0.75rem;
+            }
+            nav a {
+                font-size: 0.75rem;
+                padding: 6px 10px;
+            }
+            .bar-row {
+                grid-template-columns: 1fr 2fr auto;
+                gap: 6px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <h2><i class="fas fa-chart-bar"></i> Analysis</h2>
+            <span class="header-badge"><i class="fas fa-crown"></i> Owner</span>
+        </div>
+        <div class="header-controls">
+            <select id="periodSelect">
+                <option value="1">📅 Today</option>
+                <option value="7" selected>📅 Last 7 days</option>
+                <option value="30">📅 Last 30 days</option>
+                <option value="all">📅 All time</option>
+            </select>
+            <div id="connectionStatus">
+                <span class="dot loading" id="statusDot"></span>
+                <span id="statusText">Connecting...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card blue">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-number" id="customerCount">0</div>
+            <div class="stat-label">Total Customers</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-icon"><i class="fas fa-boxes"></i></div>
+            <div class="stat-number" id="productCount">0</div>
+            <div class="stat-label">Total Products</div>
+        </div>
+        <div class="stat-card teal">
+            <div class="stat-icon"><i class="fas fa-cubes"></i></div>
+            <div class="stat-number" id="stockUnits">0</div>
+            <div class="stat-label">Units in Stock</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+            <div class="stat-number" id="inventoryValue">0 ETB</div>
+            <div class="stat-label">Inventory Value</div>
+        </div>
+        <div class="stat-card purple">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-number" id="pendingCount">0</div>
+            <div class="stat-label">Pending Orders</div>
+        </div>
+        <div class="stat-card red">
+            <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+            <div class="stat-number" id="unreadMessages">0</div>
+            <div class="stat-label">Unread Messages</div>
+        </div>
+    </div>
+
+    <!-- Analysis -->
+    <div class="analysis-container">
+        <div class="analysis-grid">
+            <div class="analysis-card">
+                <h3><i class="fas fa-calendar-day"></i> Orders by Day</h3>
+                <div id="ordersByDay"><p class="muted">No order data available</p></div>
+            </div>
+            <div class="analysis-card">
+                <h3><i class="fas fa-tags"></i> Products by Category</h3>
+                <div id="categoryAnalysis"><p class="muted">No product data available</p></div>
+            </div>
+            <div class="analysis-card">
+                <h3><i class="fas fa-building"></i> Products by Brand</h3>
+                <div id="brandAnalysis"><p class="muted">No product data available</p></div>
+            </div>
+            <div class="analysis-card">
+                <h3><i class="fas fa-exclamation-triangle"></i> Stock Warnings</h3>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Product</th><th>Stock</th><th>Status</th></tr></thead>
+                        <tbody id="stockWarnings"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-box"><h4>📈 Orders Trend</h4><canvas id="ordersTrendChart"></canvas></div>
+            <div class="chart-box"><h4>💰 Pending Order Value</h4><canvas id="pendingValueTrendChart"></canvas></div>
+            <div class="chart-box"><h4>📦 Stock by Category</h4><canvas id="categoryStockChart"></canvas></div>
+            <div class="chart-box"><h4>💎 Inventory Value by Category</h4><canvas id="categoryValueChart"></canvas></div>
+        </div>
+
+        <!-- Toggle -->
+        <button id="analyticsToggle" class="toggle-btn">
+            <i class="fas fa-plus-circle"></i> Show More Analytics
+        </button>
+
+        <!-- Advanced Charts -->
+        <div id="advancedAnalytics" class="charts-grid">
+            <div class="chart-box"><h4>🏆 Top Ordered Products</h4><canvas id="topOrderedProductsChart"></canvas></div>
+            <div class="chart-box"><h4>📊 Ordered Units by Product</h4><canvas id="orderedUnitsChart"></canvas></div>
+            <div class="chart-box"><h4>⚠️ Low Stock Products</h4><canvas id="lowStockChart"></canvas></div>
+            <div class="chart-box"><h4>📊 Stock Status</h4><canvas id="stockStatusChart"></canvas></div>
+            <div class="chart-box"><h4>🕐 Orders by Hour</h4><canvas id="ordersByHourChart"></canvas></div>
+            <div class="chart-box"><h4>👤 Customer Registrations</h4><canvas id="customersTrendChart"></canvas></div>
+            <div class="chart-box"><h4>🏷️ Inventory Value by Brand</h4><canvas id="brandValueChart"></canvas></div>
+            <div class="chart-box"><h4>💰 Pending Value by Product</h4><canvas id="pendingProductValueChart"></canvas></div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="analysis-card full-width" style="margin-top:16px;">
+            <h3><i class="fas fa-list"></i> Recent Pending Orders</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Date</th><th>Product</th><th>Qty</th><th>Price</th><th>Total</th><th>Customer</th></tr></thead>
+                    <tbody id="recentOrders"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <nav>
+        <a href="home.html"><i class="fas fa-home"></i> Home</a>
+        <a href="message.html"><i class="fas fa-comment-dots"></i> Message</a>
+        <a href="analysis.html" class="current"><i class="fas fa-chart-bar"></i> Analysis</a>
+        <a href="control.html"><i class="fas fa-cog"></i> Control</a>
+    </nav>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
+            authDomain: "adey-bonda.firebaseapp.com",
+            projectId: "adey-bonda",
+            storageBucket: "adey-bonda.firebasestorage.app",
+            messagingSenderId: "820555835547",
+            appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const state = { users: {}, products: {}, orders: {}, messages: {} };
+        const loaded = { users: false, products: false, orders: false, messages: false };
+
+        const periodSelect = document.getElementById("periodSelect");
+        const statusText = document.getElementById("statusText");
+        const statusDot = document.getElementById("statusDot");
+        const analyticsToggle = document.getElementById("analyticsToggle");
+        const advancedAnalytics = document.getElementById("advancedAnalytics");
+        const chartInstances = {};
+
+        let isAdvancedVisible = false;
+
+        // Listen to Firebase
+        function listen(path, stateKey) {
+            onValue(ref(database, path), snapshot => {
+                state[stateKey] = snapshot.val() || {};
+                loaded[stateKey] = true;
+                updateStatus();
+                renderAnalysis();
+            }, error => {
+                console.error(`Error loading ${path}:`, error);
+                statusText.textContent = 'Error loading data';
+                statusDot.className = 'dot';
+            });
+        }
+
+        listen("AdeyBonda/users", "users");
+        listen("AdeyBonda/products", "products");
+        listen("AdeyBonda/pending orders", "orders");
+        listen("AdeyBonda/messages", "messages");
+
+        periodSelect.addEventListener("change", renderAnalysis);
+
+        analyticsToggle.addEventListener("click", () => {
+            isAdvancedVisible = !isAdvancedVisible;
+            advancedAnalytics.classList.toggle('show', isAdvancedVisible);
+            analyticsToggle.innerHTML = isAdvancedVisible 
+                ? '<i class="fas fa-minus-circle"></i> Hide More Analytics' 
+                : '<i class="fas fa-plus-circle"></i> Show More Analytics';
+            if (isAdvancedVisible) renderCharts(getProducts(), getOrders(getProducts()));
+        });
+
+        function updateStatus() {
+            const ready = Object.values(loaded).filter(Boolean).length;
+            if (ready === 4) {
+                statusText.textContent = `Live • ${new Date().toLocaleTimeString()}`;
+                statusDot.className = 'dot online';
+            } else {
+                statusText.textContent = `Loading ${ready}/4...`;
+                statusDot.className = 'dot loading';
+            }
+        }
+
+        function toNumber(v, fallback = 0) {
+            const n = Number(v);
+            return Number.isFinite(n) ? n : fallback;
+        }
+
+        function formatMoney(v) {
+            return `${Math.round(toNumber(v)).toLocaleString()} ETB`;
+        }
+
+        function getProducts() {
+            const result = {};
+            for (const [id, raw] of Object.entries(state.products)) {
+                if (id === "selledProducts") continue;
+                const info = raw?.productinformation || raw;
+                if (!info || typeof info !== 'object') continue;
+                result[id] = {
+                    id,
+                    name: String(info.name || 'Unnamed'),
+                    price: Math.max(0, toNumber(info.price)),
+                    quantity: Math.max(0, toNumber(info.quantity, 1)),
+                    type: String(info.type || 'Other'),
+                    brand: String(info.brand || 'Unbranded')
+                };
+            }
+            return result;
+        }
+
+        function getOrders(products) {
+            return Object.entries(state.orders).map(([id, order]) => {
+                const product = products[order?.productId] || null;
+                const qty = Math.max(1, Math.floor(toNumber(order?.HowMany ?? order?.quantity, 1)));
+                return {
+                    id,
+                    productId: order?.productId || '',
+                    userId: order?.userId || 'Not saved',
+                    timestamp: toNumber(order?.timestamp),
+                    quantity: qty,
+                    product,
+                    total: product ? product.price * qty : 0
+                };
+            });
+        }
+
+        function filterOrders(orders) {
+            if (periodSelect.value === 'all') return orders;
+            const days = Number(periodSelect.value);
+            const start = new Date();
+            start.setHours(0, 0, 0, 0);
+            if (days > 1) start.setDate(start.getDate() - (days - 1));
+            return orders.filter(o => o.timestamp >= start.getTime());
+        }
+
+        function countBy(items, key) {
+            const counts = {};
+            items.forEach(item => {
+                const label = String(item[key] || 'Unknown').trim() || 'Unknown';
+                counts[label] = (counts[label] || 0) + 1;
+            });
+            return counts;
+        }
+
+        function countOrdersByDay(orders) {
+            const counts = {};
+            orders.forEach(o => {
+                if (!o.timestamp) return;
+                const label = new Date(o.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                counts[label] = (counts[label] || 0) + 1;
+            });
+            return counts;
+        }
+
+        function countUnreadMessages() {
+            let count = 0;
+            for (const [userId, conv] of Object.entries(state.messages)) {
+                if (!conv || typeof conv !== 'object') continue;
+                for (const [msgId, msg] of Object.entries(conv)) {
+                    if (msgId === 'lastMessage') continue;
+                    if (msg?.from === userId && msg?.seen === false) count++;
+                }
+            }
+            return count;
+        }
+
+        function renderBars(containerId, counts, maxItems = 12) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, maxItems);
+            if (!entries.length) {
+                container.innerHTML = '<p class="muted">No data available</p>';
+                return;
+            }
+            const max = Math.max(...entries.map(([, v]) => v), 1);
+            entries.forEach(([label, count]) => {
+                const row = document.createElement('div');
+                row.className = 'bar-row';
+                const labelEl = document.createElement('span');
+                labelEl.className = 'label';
+                labelEl.textContent = label;
+                const track = document.createElement('div');
+                track.className = 'bar-track';
+                const fill = document.createElement('div');
+                fill.className = 'bar-fill';
+                fill.style.width = `${(count / max) * 100}%`;
+                track.appendChild(fill);
+                const value = document.createElement('span');
+                value.className = 'value';
+                value.textContent = count;
+                row.append(labelEl, track, value);
+                container.appendChild(row);
+            });
+        }
+
+        function renderStockWarnings(products) {
+            const tbody = document.getElementById('stockWarnings');
+            tbody.innerHTML = '';
+            const warnings = products.filter(p => p.quantity <= 5).sort((a, b) => a.quantity - b.quantity);
+            if (!warnings.length) {
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.colSpan = 3;
+                cell.className = 'muted';
+                cell.textContent = 'All products have healthy stock levels ✅';
+                row.appendChild(cell);
+                tbody.appendChild(row);
+                return;
+            }
+            warnings.forEach(p => {
+                const row = document.createElement('tr');
+                const name = document.createElement('td');
+                name.textContent = p.name;
+                const stock = document.createElement('td');
+                stock.textContent = p.quantity;
+                const status = document.createElement('td');
+                const badge = document.createElement('span');
+                badge.className = `status-badge ${p.quantity === 0 ? 'danger' : 'warning'}`;
+                badge.textContent = p.quantity === 0 ? 'Out of stock' : 'Low stock';
+                status.appendChild(badge);
+                row.append(name, stock, status);
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderRecentOrders(orders) {
+            const tbody = document.getElementById('recentOrders');
+            tbody.innerHTML = '';
+            const recent = [...orders].sort((a, b) => b.timestamp - a.timestamp).slice(0, 20);
+            if (!recent.length) {
+                const row = document.createElement('tr');
+                const cell = document.createElement('td');
+                cell.colSpan = 6;
+                cell.className = 'muted';
+                cell.textContent = 'No pending orders in this period';
+                row.appendChild(cell);
+                tbody.appendChild(row);
+                return;
+            }
+            recent.forEach(o => {
+                const row = document.createElement('tr');
+                const date = document.createElement('td');
+                date.textContent = o.timestamp ? new Date(o.timestamp).toLocaleString() : 'Unknown';
+                const product = document.createElement('td');
+                product.textContent = o.product?.name || `Missing (${o.productId || 'no ID'})`;
+                const qty = document.createElement('td');
+                qty.textContent = o.quantity;
+                const price = document.createElement('td');
+                price.textContent = o.product ? formatMoney(o.product.price) : '—';
+                const total = document.createElement('td');
+                total.textContent = o.product ? formatMoney(o.total) : '—';
+                const customer = document.createElement('td');
+                customer.textContent = o.userId;
+                customer.style.fontSize = '0.8rem';
+                customer.style.color = '#6f8fa8';
+                row.append(date, product, qty, price, total, customer);
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderAnalysis() {
+            const products = getProducts();
+            const productList = Object.values(products);
+            const allOrders = getOrders(products);
+            const filtered = filterOrders(allOrders);
+
+            const totalStock = productList.reduce((s, p) => s + p.quantity, 0);
+            const inventoryValue = productList.reduce((s, p) => s + p.quantity * p.price, 0);
+
+            document.getElementById('customerCount').textContent = Object.keys(state.users).length;
+            document.getElementById('productCount').textContent = productList.length;
+            document.getElementById('stockUnits').textContent = totalStock.toLocaleString();
+            document.getElementById('inventoryValue').textContent = formatMoney(inventoryValue);
+            document.getElementById('pendingCount').textContent = filtered.length;
+            document.getElementById('unreadMessages').textContent = countUnreadMessages();
+
+            renderBars('ordersByDay', countOrdersByDay(filtered));
+            renderBars('categoryAnalysis', countBy(productList, 'type'));
+            renderBars('brandAnalysis', countBy(productList, 'brand'));
+            renderStockWarnings(productList);
+            renderRecentOrders(filtered);
+            renderCharts(products, filtered);
+        }
+
+        // Charts
+        function renderCharts(products, orders) {
+            if (!window.Chart) return;
+            const productList = Object.values(products);
+
+            const daily = groupByDate(orders);
+            createChart('ordersTrendChart', 'line', daily.labels, [{ label: 'Orders', data: daily.counts }]);
+            createChart('pendingValueTrendChart', 'line', daily.labels, [{ label: 'Value (ETB)', data: daily.values }]);
+
+            const catStock = aggregate(productList, 'type', p => p.quantity);
+            createChart('categoryStockChart', 'bar', catStock.labels, [{ label: 'Units', data: catStock.values }]);
+
+            const catValue = aggregate(productList, 'type', p => p.quantity * p.price);
+            createChart('categoryValueChart', 'bar', catValue.labels, [{ label: 'Value (ETB)', data: catValue.values }]);
+
+            if (!isAdvancedVisible) return;
+
+            const topOrders = aggregateOrders(orders, products, () => 1, 10);
+            createChart('topOrderedProductsChart', 'bar', topOrders.labels, [{ label: 'Orders', data: topOrders.values }]);
+
+            const orderedUnits = aggregateOrders(orders, products, o => o.quantity, 10);
+            createChart('orderedUnitsChart', 'bar', orderedUnits.labels, [{ label: 'Units', data: orderedUnits.values }]);
+
+            const lowStock = productList.filter(p => p.quantity <= 5).sort((a, b) => a.quantity - b.quantity).slice(0, 12);
+            createChart('lowStockChart', 'bar', lowStock.map(p => p.name), [{ label: 'Units', data: lowStock.map(p => p.quantity) }]);
+
+            const stockStatus = [
+                productList.filter(p => p.quantity === 0).length,
+                productList.filter(p => p.quantity > 0 && p.quantity <= 5).length,
+                productList.filter(p => p.quantity > 5).length
+            ];
+            createChart('stockStatusChart', 'doughnut', ['Out of Stock', 'Low Stock', 'Healthy'], [{ label: 'Products', data: stockStatus }]);
+
+            const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0') + ':00');
+            const hourCounts = Array(24).fill(0);
+            orders.forEach(o => { if (o.timestamp) hourCounts[new Date(o.timestamp).getHours()]++; });
+            createChart('ordersByHourChart', 'bar', hours, [{ label: 'Orders', data: hourCounts }]);
+
+            const customerDays = groupUsersByDate(state.users);
+            createChart('customersTrendChart', 'line', customerDays.labels, [{ label: 'New Customers', data: customerDays.values }]);
+
+            const brandValue = aggregate(productList, 'brand', p => p.quantity * p.price, 10);
+            createChart('brandValueChart', 'bar', brandValue.labels, [{ label: 'Value (ETB)', data: brandValue.values }]);
+
+            const pendingValue = aggregateOrders(orders, products, o => o.total, 10);
+            createChart('pendingProductValueChart', 'bar', pendingValue.labels, [{ label: 'Value (ETB)', data: pendingValue.values }]);
+        }
+
+        function createChart(id, type, labels, datasets) {
+            const canvas = document.getElementById(id);
+            if (!canvas) return;
+            if (chartInstances[id]) chartInstances[id].destroy();
+            chartInstances[id] = new Chart(canvas, {
+                type,
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: type === 'doughnut' || datasets.length > 1, position: 'bottom' }
+                    },
+                    scales: type === 'doughnut' ? {} : { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        function groupByDate(orders) {
+            const data = {};
+            orders.forEach(o => {
+                if (!o.timestamp) return;
+                const day = new Date(o.timestamp);
+                day.setHours(0, 0, 0, 0);
+                const key = day.getTime();
+                if (!data[key]) data[key] = { count: 0, value: 0 };
+                data[key].count++;
+                data[key].value += o.total;
+            });
+            const entries = Object.entries(data).sort((a, b) => Number(a[0]) - Number(b[0]));
+            return {
+                labels: entries.map(([t]) => new Date(Number(t)).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })),
+                counts: entries.map(([, v]) => v.count),
+                values: entries.map(([, v]) => Math.round(v.value))
+            };
+        }
+
+        function groupUsersByDate(users) {
+            const data = {};
+            Object.values(users || {}).forEach(user => {
+                const ts = toNumber(user?.timestamp);
+                if (!ts) return;
+                const day = new Date(ts);
+                day.setHours(0, 0, 0, 0);
+                data[day.getTime()] = (data[day.getTime()] || 0) + 1;
+            });
+            const entries = Object.entries(data).sort((a, b) => Number(a[0]) - Number(b[0]));
+            return {
+                labels: entries.map(([t]) => new Date(Number(t)).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })),
+                values: entries.map(([, v]) => v)
+            };
+        }
+
+        function aggregate(items, key, valueFn, limit = 12) {
+            const totals = {};
+            items.forEach(item => {
+                const label = String(item[key] || 'Unknown').trim() || 'Unknown';
+                totals[label] = (totals[label] || 0) + valueFn(item);
+            });
+            const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, limit);
+            return { labels: entries.map(e => e[0]), values: entries.map(e => Math.round(e[1])) };
+        }
+
+        function aggregateOrders(orders, products, valueFn, limit = 10) {
+            const totals = {};
+            orders.forEach(o => {
+                const label = products[o.productId]?.name || 'Missing Product';
+                totals[label] = (totals[label] || 0) + valueFn(o);
+            });
+            const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, limit);
+            return { labels: entries.map(e => e[0]), values: entries.map(e => Math.round(e[1])) };
+        }
+    </script>
+</body>
+</html>
