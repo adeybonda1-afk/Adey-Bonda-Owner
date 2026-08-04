@@ -1,0 +1,21 @@
+{
+  "name": "Adey Bonda owner",
+  "short_name": "Adey Bonda owner",
+  "description": "To control the entire adey bonda website",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0000ff",
+  "icons": [
+    {
+      "src": "Image/Icon.jpg",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Image/Icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpg"
+    }
+  ]
+}
