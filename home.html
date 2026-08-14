@@ -271,6 +271,101 @@
             margin-bottom: 12px;
         }
 
+/* Order Actions - Cancel and Sell Buttons */
+.order-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.order-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.order-actions button i {
+    font-size: 0.75rem;
+}
+
+/* Cancel Button */
+.cancel-order-btn {
+    background: #fee8e8;
+    color: #c0392b;
+}
+
+.cancel-order-btn:hover:not(:disabled) {
+    background: #fdd0d0;
+    transform: scale(1.02);
+}
+
+.cancel-order-btn:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+/* Sell Button */
+.sell-order-btn {
+    background: #e1f5e8;
+    color: #1e7e34;
+}
+
+.sell-order-btn:hover:not(:disabled) {
+    background: #c8e8d3;
+    transform: scale(1.02);
+}
+
+.sell-order-btn:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+/* Disabled state for both buttons */
+.order-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Responsive adjustments for the buttons */
+@media (max-width: 640px) {
+    .order-item {
+        flex-wrap: wrap;
+    }
+
+    .order-actions {
+        width: 100%;
+        justify-content: flex-end;
+        padding-top: 8px;
+        border-top: 1px solid #eef5fb;
+        margin-top: 4px;
+    }
+
+    .order-actions button {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .order-actions button {
+        padding: 5px 10px;
+        font-size: 0.7rem;
+    }
+
+    .order-actions button i {
+        font-size: 0.65rem;
+    }
+}
+
         /* Navigation */
         nav {
             position: fixed;
@@ -440,250 +535,1080 @@
         <a href="product input.html"><i class="fas fa-cog"></i> Product Input </a>
     </nav>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
-            authDomain: "adey-bonda.firebaseapp.com",
-            projectId: "adey-bonda",
-            storageBucket: "adey-bonda.firebasestorage.app",
-            messagingSenderId: "820555835547",
-            appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
-        };
+    import {
+        getDatabase,
+        ref,
+        onValue,
+        runTransaction,
+        update,
+        remove
+    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+    const firebaseConfig = {
+        apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
+        authDomain: "adey-bonda.firebaseapp.com",
+        projectId: "adey-bonda",
+        storageBucket: "adey-bonda.firebasestorage.app",
+        messagingSenderId: "820555835547",
+        appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
+    };
 
-        // DOM Elements
-        const userCountEl = document.getElementById('userCount');
-        const productCountEl = document.getElementById('productCount');
-        const selledCountEl = document.getElementById('selledCount');
-        const ordersContainer = document.getElementById('ordersContainer');
-        const searchInput = document.getElementById('searchInput');
-        const filterType = document.getElementById('filterType');
-        const filterBrand = document.getElementById('filterBrand');
-        const sortBy = document.getElementById('sortBy');
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-        let allOrders = [];
-        let allProducts = {};
-        let brands = new Set();
+    // ---------------------------------------------------------
+    // DOM ELEMENTS
+    // ---------------------------------------------------------
 
-        // Load stats
-        function loadStats() {
-            // Users count
-            const usersRef = ref(database, 'AdeyBonda/users');
-            onValue(usersRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    const count = Object.keys(data).length;
-                    userCountEl.textContent = count;
-                } else {
-                    userCountEl.textContent = '0';
-                }
-            });
+    const userCountEl = document.getElementById("userCount");
+    const productCountEl = document.getElementById("productCount");
+    const selledCountEl = document.getElementById("selledCount");
 
-            // Products count
-            const productsRef = ref(database, 'AdeyBonda/products');
-            onValue(productsRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    const count = Object.keys(data).length;
-                    productCountEl.textContent = count;
-                } else {
-                    productCountEl.textContent = '0';
-                }
-            });
+    const ordersContainer = document.getElementById("ordersContainer");
 
-            // Selled products count
-            const selledRef = ref(database, 'AdeyBonda/products/selledProducts');
-            onValue(selledRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    selledCountEl.textContent = data;
-                } else {
-                    selledCountEl.textContent = '0';
-                }
-            });
-        }
+    const searchInput = document.getElementById("searchInput");
+    const filterType = document.getElementById("filterType");
+    const filterBrand = document.getElementById("filterBrand");
+    const sortBy = document.getElementById("sortBy");
 
-        // Load orders
-        function loadOrders() {
-            const ordersRef = ref(database, 'AdeyBonda/pending orders');
-            onValue(ordersRef, async (snapshot) => {
-                const data = snapshot.val();
-                if (!data) {
-                    allOrders = [];
-                    renderOrders();
-                    return;
-                }
 
-                const orderIds = Object.keys(data);
-                allOrders = [];
+    // ---------------------------------------------------------
+    // STATE
+    // ---------------------------------------------------------
 
-                for (const orderId of orderIds) {
-                    const order = data[orderId];
-                    const productId = order.productId;
-                    
-                    // Get product info
-                    try {
-                        const productRef = ref(database, `AdeyBonda/products/${productId}/productinformation`);
-                        const productSnap = await get(productRef);
-                        const product = productSnap.val();
+    let allOrders = [];
+    let brands = new Set();
 
-                        if (product) {
-                            allOrders.push({
-                                id: orderId,
-                                productId: productId,
-                                howMany: order.HowMany || 1,
-                                timestamp: order.timestamp || Date.now(),
-                                product: product,
-                                name: product.name || 'Unnamed',
-                                type: product.type || 'Other',
-                                brand: product.brand || 'Unbranded',
-                                images: product.images ? product.images.split(',') : []
-                            });
+    // Prevent double-click / simultaneous processing
+    const processingOrders = new Set();
 
-                            // Collect brands for filter
-                            if (product.brand && product.brand !== 'Unbranded') {
-                                brands.add(product.brand);
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error loading product:', error);
-                    }
-                }
 
-                // Update brand filter
-                updateBrandFilter();
-                renderOrders();
-            });
-        }
+    // ---------------------------------------------------------
+    // LOAD STATISTICS
+    // ---------------------------------------------------------
 
-        // Update brand filter dropdown
-        function updateBrandFilter() {
-            const currentVal = filterBrand.value;
-            filterBrand.innerHTML = '<option value="all">All Brands</option>';
-            Array.from(brands).sort().forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b;
-                opt.textContent = b;
-                filterBrand.appendChild(opt);
-            });
-            filterBrand.value = currentVal;
-        }
+    function loadStats() {
 
-        // Render orders with filters and sort
-        function renderOrders() {
-            let filtered = [...allOrders];
+        // Users
+        const usersRef = ref(
+            database,
+            "AdeyBonda/users"
+        );
 
-            // Search
-            const search = searchInput.value.toLowerCase().trim();
-            if (search) {
-                filtered = filtered.filter(o => 
-                    o.name.toLowerCase().includes(search) || 
-                    o.brand.toLowerCase().includes(search)
-                );
+        onValue(usersRef, (snapshot) => {
+
+            const data = snapshot.val();
+
+            if (data) {
+                userCountEl.textContent =
+                    Object.keys(data).length;
+            } else {
+                userCountEl.textContent = "0";
             }
+        });
 
-            // Filter by type
-            const type = filterType.value;
-            if (type !== 'all') {
-                filtered = filtered.filter(o => o.type === type);
-            }
 
-            // Filter by brand
-            const brand = filterBrand.value;
-            if (brand !== 'all') {
-                filtered = filtered.filter(o => o.brand === brand);
-            }
+        // Products
+        const productsRef = ref(
+            database,
+            "AdeyBonda/products"
+        );
 
-            // Sort
-            const sort = sortBy.value;
-            switch (sort) {
-                case 'time-desc':
-                    filtered.sort((a, b) => b.timestamp - a.timestamp);
-                    break;
-                case 'time-asc':
-                    filtered.sort((a, b) => a.timestamp - b.timestamp);
-                    break;
-                case 'name-asc':
-                    filtered.sort((a, b) => a.name.localeCompare(b.name));
-                    break;
-                case 'name-desc':
-                    filtered.sort((a, b) => b.name.localeCompare(a.name));
-                    break;
-                default:
-                    break;
-            }
+        onValue(productsRef, (snapshot) => {
 
-            // Render
-            if (filtered.length === 0) {
-                ordersContainer.innerHTML = `
-                    <div class="empty-orders">
-                        <i class="fas fa-inbox"></i>
-                        <div>No orders match your filters</div>
-                        <div style="font-size: 0.85rem; margin-top: 4px;">Try adjusting your search or filters</div>
-                    </div>
-                `;
+            const data = snapshot.val();
+
+            if (!data) {
+                productCountEl.textContent = "0";
                 return;
             }
 
-            let html = '';
-            filtered.forEach(order => {
-                const firstImage = order.images.length > 0 ? order.images[0] : null;
-                const time = new Date(order.timestamp).toLocaleString();
-                const typeIcon = getTypeIcon(order.type);
+            // Do NOT count selledProducts as a product.
+            const productIds = Object.keys(data)
+                .filter(id => id !== "selledProducts");
 
-                html += `
-                    <div class="order-item">
-                        ${firstImage ? 
-                            `<img src="https://lh3.googleusercontent.com/d/${firstImage}" class="order-thumbnail" alt="${order.name}" loading="lazy" />` :
-                            `<div class="order-thumbnail-placeholder"><i class="fas fa-box"></i></div>`
-                        }
-                        <div class="order-info">
-                            <div class="order-name">${order.name}</div>
-                            <div class="order-meta">
-                                <span><i class="fas fa-tag"></i> ${order.brand}</span>
-                                <span><i class="fas fa-layer-group"></i> ${typeIcon} ${order.type}</span>
-                                <span><i class="fas fa-hashtag"></i> #${order.productId.slice(-6)}</span>
-                            </div>
-                        </div>
-                        <div class="order-right">
-                            <div class="order-quantity">${order.howMany} <span>items</span></div>
-                            <div class="order-time"><i class="far fa-clock"></i> ${time}</div>
-                        </div>
-                    </div>
-                `;
+            productCountEl.textContent =
+                productIds.length;
+        });
+
+
+        // Selled products
+        const selledRef = ref(
+            database,
+            "AdeyBonda/products/selledProducts"
+        );
+
+        onValue(selledRef, (snapshot) => {
+
+            const value = Number(snapshot.val());
+
+            selledCountEl.textContent =
+                Number.isFinite(value) ? value : 0;
+        });
+    }
+
+
+    // ---------------------------------------------------------
+    // LOAD PENDING ORDERS
+    // ---------------------------------------------------------
+
+    function loadOrders() {
+
+        const ordersRef = ref(
+            database,
+            "AdeyBonda/pending orders"
+        );
+
+        onValue(ordersRef, (snapshot) => {
+
+            const data = snapshot.val();
+
+            if (!data) {
+
+                allOrders = [];
+                brands.clear();
+
+                updateBrandFilter();
+                renderOrders();
+
+                return;
+            }
+
+            allOrders = [];
+            brands.clear();
+
+            for (const orderId of Object.keys(data)) {
+
+                const order = data[orderId];
+
+                if (!order) continue;
+
+                // -------------------------------------------------
+                // NEW ORDER STRUCTURE
+                //
+                // order.productInformation contains everything.
+                // We DON'T read /products here anymore.
+                // -------------------------------------------------
+
+                const product =
+                    order.productInformation;
+
+                if (!product) {
+                    console.warn(
+                        "Order has no productInformation:",
+                        orderId
+                    );
+                    continue;
+                }
+
+
+                // Product ID is now inside productInformation
+                const productId =
+                    product.productId;
+
+                if (!productId) {
+                    console.warn(
+                        "Order has no productId:",
+                        orderId
+                    );
+                    continue;
+                }
+
+
+                const howMany =
+                    Number(order.HowMany);
+
+
+                allOrders.push({
+
+                    id: orderId,
+
+                    userId: order.userId,
+
+                    productId: productId,
+
+                    howMany:
+                        Number.isInteger(howMany) &&
+                        howMany > 0
+                            ? howMany
+                            : 1,
+
+                    timestamp:
+                        Number(order.timestamp) ||
+                        Date.now(),
+
+                    status:
+                        order.status || "pending",
+
+                    product: product,
+
+                    name:
+                        product.name ||
+                        "Unnamed",
+
+                    type:
+                        product.type ||
+                        "Other",
+
+                    brand:
+                        product.brand ||
+                        "Unbranded",
+
+                    images:
+                        typeof product.images === "string"
+                            ? product.images
+                                .split(",")
+                                .map(image => image.trim())
+                                .filter(Boolean)
+                            : Array.isArray(product.images)
+                                ? product.images
+                                : []
+                });
+
+
+                if (
+                    product.brand &&
+                    product.brand !== "Unbranded"
+                ) {
+                    brands.add(product.brand);
+                }
+            }
+
+            updateBrandFilter();
+            renderOrders();
+        });
+    }
+
+
+    // ---------------------------------------------------------
+    // UPDATE BRAND FILTER
+    // ---------------------------------------------------------
+
+    function updateBrandFilter() {
+
+        const currentValue =
+            filterBrand.value;
+
+        filterBrand.innerHTML =
+            '<option value="all">All Brands</option>';
+
+        Array.from(brands)
+            .sort()
+            .forEach(brand => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = brand;
+                option.textContent = brand;
+
+                filterBrand.appendChild(option);
             });
 
-            ordersContainer.innerHTML = html;
+        filterBrand.value =
+            currentValue;
+    }
+
+
+    // ---------------------------------------------------------
+    // ESCAPE HTML
+    // ---------------------------------------------------------
+    // Firebase data can contain user/product-controlled text.
+    // Don't insert it directly into innerHTML.
+
+    function escapeHtml(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    // ---------------------------------------------------------
+    // RENDER ORDERS
+    // ---------------------------------------------------------
+
+    function renderOrders() {
+
+        let filtered =
+            [...allOrders];
+
+
+        // Search
+        const search =
+            searchInput.value
+                .toLowerCase()
+                .trim();
+
+        if (search) {
+
+            filtered =
+                filtered.filter(order =>
+
+                    order.name
+                        .toLowerCase()
+                        .includes(search) ||
+
+                    order.brand
+                        .toLowerCase()
+                        .includes(search)
+                );
         }
 
-        // Get type icon
-        function getTypeIcon(type) {
-            const icons = {
-                'Shoes': '👟',
-                'T-Shirt': '👕',
-                'Coat': '🧥',
-                'Sweater': '🧶',
-                'Pants': '👖',
-                'Hat': '🧢',
-                'Other': '📦'
-            };
-            return icons[type] || '📦';
+
+        // Type filter
+        const type =
+            filterType.value;
+
+        if (type !== "all") {
+
+            filtered =
+                filtered.filter(
+                    order => order.type === type
+                );
         }
 
-        // Event listeners
-        searchInput.addEventListener('input', renderOrders);
-        filterType.addEventListener('change', renderOrders);
-        filterBrand.addEventListener('change', renderOrders);
-        sortBy.addEventListener('change', renderOrders);
 
-        // Initialize
-        loadStats();
-        loadOrders();
-    </script>
+        // Brand filter
+        const brand =
+            filterBrand.value;
+
+        if (brand !== "all") {
+
+            filtered =
+                filtered.filter(
+                    order => order.brand === brand
+                );
+        }
+
+
+        // Sorting
+        const sort =
+            sortBy.value;
+
+        switch (sort) {
+
+            case "time-desc":
+                filtered.sort(
+                    (a, b) =>
+                        b.timestamp - a.timestamp
+                );
+                break;
+
+            case "time-asc":
+                filtered.sort(
+                    (a, b) =>
+                        a.timestamp - b.timestamp
+                );
+                break;
+
+            case "name-asc":
+                filtered.sort(
+                    (a, b) =>
+                        a.name.localeCompare(b.name)
+                );
+                break;
+
+            case "name-desc":
+                filtered.sort(
+                    (a, b) =>
+                        b.name.localeCompare(a.name)
+                );
+                break;
+        }
+
+
+        // Empty
+        if (filtered.length === 0) {
+
+            ordersContainer.innerHTML = `
+                <div class="empty-orders">
+                    <i class="fas fa-inbox"></i>
+                    <div>No orders match your filters</div>
+                    <div style="font-size: 0.85rem; margin-top: 4px;">
+                        Try adjusting your search or filters
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        let html = "";
+
+
+        filtered.forEach(order => {
+
+            const firstImage =
+                order.images.length > 0
+                    ? order.images[0]
+                    : null;
+
+
+            const time =
+                new Date(
+                    order.timestamp
+                ).toLocaleString();
+
+
+            const typeIcon =
+                getTypeIcon(order.type);
+
+
+            const safeName =
+                escapeHtml(order.name);
+
+            const safeBrand =
+                escapeHtml(order.brand);
+
+            const safeType =
+                escapeHtml(order.type);
+
+            const safeProductId =
+                escapeHtml(order.productId);
+
+
+            let imageHtml;
+
+            if (firstImage) {
+
+                const safeImage =
+                    encodeURIComponent(firstImage);
+
+                imageHtml = `
+                    <img
+                        src="https://lh3.googleusercontent.com/d/${safeImage}"
+                        class="order-thumbnail"
+                        alt="${safeName}"
+                        loading="lazy"
+                    />
+                `;
+
+            } else {
+
+                imageHtml = `
+                    <div class="order-thumbnail-placeholder">
+                        <i class="fas fa-box"></i>
+                    </div>
+                `;
+            }
+
+
+            const isProcessing =
+                processingOrders.has(order.id);
+
+
+            html += `
+
+                <div
+                    class="order-item"
+                    data-order-id="${escapeHtml(order.id)}"
+                >
+
+                    ${imageHtml}
+
+
+                    <div class="order-info">
+
+                        <div class="order-name">
+                            ${safeName}
+                        </div>
+
+                        <div class="order-meta">
+
+                            <span>
+                                <i class="fas fa-tag"></i>
+                                ${safeBrand}
+                            </span>
+
+                            <span>
+                                <i class="fas fa-layer-group"></i>
+                                ${typeIcon}
+                                ${safeType}
+                            </span>
+
+                            <span>
+                                <i class="fas fa-hashtag"></i>
+                                #${safeProductId.slice(-6)}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="order-right">
+
+                        <div class="order-quantity">
+                            ${order.howMany}
+                            <span>items</span>
+                        </div>
+
+                        <div class="order-time">
+                            <i class="far fa-clock"></i>
+                            ${escapeHtml(time)}
+                        </div>
+
+                    </div>
+
+
+                    <div class="order-actions">
+
+                        <button
+                            class="cancel-order-btn"
+                            data-order-id="${escapeHtml(order.id)}"
+                            ${isProcessing ? "disabled" : ""}
+                        >
+                            <i class="fas fa-times"></i>
+                            Cancel
+                        </button>
+
+                        <button
+                            class="sell-order-btn"
+                            data-order-id="${escapeHtml(order.id)}"
+                            ${isProcessing ? "disabled" : ""}
+                        >
+                            <i class="fas fa-check"></i>
+                            Sell
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+        });
+
+
+        ordersContainer.innerHTML = html;
+    }
+
+
+    // ---------------------------------------------------------
+    // TYPE ICON
+    // ---------------------------------------------------------
+
+    function getTypeIcon(type) {
+
+        const icons = {
+
+            "Shoes": "👟",
+            "T-Shirt": "👕",
+            "Coat": "🧥",
+            "Sweater": "🧶",
+            "Pants": "👖",
+            "Hat": "🧢",
+            "Other": "📦"
+        };
+
+        return icons[type] || "📦";
+    }
+
+
+    // ---------------------------------------------------------
+    // CANCEL ORDER
+    // ---------------------------------------------------------
+
+    async function cancelOrder(orderId) {
+
+        if (processingOrders.has(orderId)) {
+            return;
+        }
+
+        const order =
+            allOrders.find(
+                item => item.id === orderId
+            );
+
+        if (!order) {
+
+            alert(
+                "❌ Order is no longer available."
+            );
+
+            return;
+        }
+
+
+        if (order.status !== "pending") {
+
+            alert(
+                "❌ This order has already been processed."
+            );
+
+            return;
+        }
+
+
+        const confirmed =
+            confirm(
+                `Cancel this order?\n\n` +
+                `${order.name}\n` +
+                `Quantity: ${order.howMany}`
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        processingOrders.add(orderId);
+        renderOrders();
+
+
+        try {
+
+            const productId =
+                order.productId;
+
+            const howMany =
+                Number(order.howMany);
+
+            const productRef =
+                ref(
+                    database,
+                    `AdeyBonda/products/${productId}`
+                );
+
+
+            // -------------------------------------------------
+            // Restore product using a transaction.
+            //
+            // If product exists:
+            //     current quantity + HowMany
+            //
+            // If product doesn't exist:
+            //     recreate it with HowMany
+            // -------------------------------------------------
+
+            const restoreResult =
+                await runTransaction(
+                    productRef,
+                    currentProduct => {
+
+                        // Product doesn't exist.
+                        if (currentProduct === null) {
+
+                            const restoredProduct = {
+                                ...order.product
+                            };
+
+
+                            // VERY IMPORTANT:
+                            // productId must NOT be inside
+                            // productinformation.
+                            delete restoredProduct.productId;
+
+
+                            // Quantity comes from the order.
+                            restoredProduct.quantity =
+                                howMany;
+
+
+                            // Recalculate quantity type.
+                            restoredProduct.quantityType =
+                                howMany === 1
+                                    ? "one"
+                                    : "multiple";
+
+
+                            return {
+                                productinformation:
+                                    restoredProduct
+                            };
+                        }
+
+
+                        // Product exists.
+                        const product =
+                            {
+                                ...currentProduct
+                            };
+
+
+                        if (
+                            !product.productinformation
+                        ) {
+
+                            product.productinformation =
+                                {};
+                        }
+
+
+                        const information =
+                            {
+                                ...product.productinformation
+                            };
+
+
+                        const currentQuantity =
+                            Number(
+                                information.quantity
+                            );
+
+
+                        const safeCurrentQuantity =
+                            Number.isFinite(
+                                currentQuantity
+                            )
+                                ? currentQuantity
+                                : 0;
+
+
+                        const newQuantity =
+                            safeCurrentQuantity +
+                            howMany;
+
+
+                        information.quantity =
+                            newQuantity;
+
+
+                        information.quantityType =
+                            newQuantity === 1
+                                ? "one"
+                                : "multiple";
+
+
+                        // Product ID should never be
+                        // inside productinformation.
+                        delete information.productId;
+
+
+                        product.productinformation =
+                            information;
+
+
+                        return product;
+                    }
+                );
+
+
+            if (!restoreResult.committed) {
+
+                throw new Error(
+                    "Could not restore the product."
+                );
+            }
+
+
+            // -------------------------------------------------
+            // Change user order to cancelled
+            // AND remove pending order.
+            //
+            // Same orderId is now used in both places.
+            // -------------------------------------------------
+
+            const userId =
+                order.userId;
+
+            if (!userId) {
+
+                throw new Error(
+                    "Order has no userId."
+                );
+            }
+
+
+            const userOrderPath =
+                `AdeyBonda/users/${userId}/orders/${orderId}`;
+
+            const pendingOrderPath =
+                `AdeyBonda/pending orders/${orderId}`;
+
+
+            await update(
+                ref(database),
+                {
+                    [`${userOrderPath}/status`]:
+                        "cancelled",
+
+                    [`${userOrderPath}/cancelledAt`]:
+                        Date.now(),
+
+                    [pendingOrderPath]:
+                        null
+                }
+            );
+
+
+            alert(
+                "✅ Order cancelled and product restored."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Cancel order error:",
+                error
+            );
+
+            alert(
+                "❌ Failed to cancel the order.\n\n" +
+                error.message
+            );
+
+        } finally {
+
+            processingOrders.delete(orderId);
+
+            renderOrders();
+        }
+    }
+
+
+    // ---------------------------------------------------------
+    // SELL ORDER
+    // ---------------------------------------------------------
+
+    async function sellOrder(orderId) {
+
+        if (processingOrders.has(orderId)) {
+            return;
+        }
+
+
+        const order =
+            allOrders.find(
+                item => item.id === orderId
+            );
+
+
+        if (!order) {
+
+            alert(
+                "❌ Order is no longer available."
+            );
+
+            return;
+        }
+
+
+        if (order.status !== "pending") {
+
+            alert(
+                "❌ This order has already been processed."
+            );
+
+            return;
+        }
+
+
+        const confirmed =
+            confirm(
+                `Mark this order as SOLD?\n\n` +
+                `${order.name}\n` +
+                `Quantity: ${order.howMany}`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        processingOrders.add(orderId);
+        renderOrders();
+
+
+        try {
+
+            const userId =
+                order.userId;
+
+            if (!userId) {
+
+                throw new Error(
+                    "Order has no userId."
+                );
+            }
+
+
+            const howMany =
+                Number(order.howMany);
+
+
+            if (
+                !Number.isInteger(howMany) ||
+                howMany < 1
+            ) {
+
+                throw new Error(
+                    "Invalid order quantity."
+                );
+            }
+
+
+            // -------------------------------------------------
+            // Increase total sold products safely.
+            // -------------------------------------------------
+
+            const selledRef =
+                ref(
+                    database,
+                    "AdeyBonda/products/selledProducts"
+                );
+
+
+            const soldResult =
+                await runTransaction(
+                    selledRef,
+                    currentValue => {
+
+                        const current =
+                            Number(currentValue);
+
+
+                        const safeCurrent =
+                            Number.isFinite(current)
+                                ? current
+                                : 0;
+
+
+                        return safeCurrent + howMany;
+                    }
+                );
+
+
+            if (!soldResult.committed) {
+
+                throw new Error(
+                    "Could not update sold products count."
+                );
+            }
+
+
+            // -------------------------------------------------
+            // Update customer order + delete pending order.
+            // -------------------------------------------------
+
+            const userOrderPath =
+                `AdeyBonda/users/${userId}/orders/${orderId}`;
+
+            const pendingOrderPath =
+                `AdeyBonda/pending orders/${orderId}`;
+
+
+            await update(
+                ref(database),
+                {
+                    [`${userOrderPath}/status`]:
+                        "selled",
+
+                    [`${userOrderPath}/selledAt`]:
+                        Date.now(),
+
+                    [pendingOrderPath]:
+                        null
+                }
+            );
+
+
+            alert(
+                "✅ Order marked as sold."
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Sell order error:",
+                error
+            );
+
+            alert(
+                "❌ Failed to sell the order.\n\n" +
+                error.message
+            );
+
+        } finally {
+
+            processingOrders.delete(orderId);
+
+            renderOrders();
+        }
+    }
+
+
+    // ---------------------------------------------------------
+    // ORDER BUTTON EVENTS
+    // ---------------------------------------------------------
+    // Event delegation means we don't need to add listeners
+    // to every button individually.
+
+    ordersContainer.addEventListener(
+        "click",
+        event => {
+
+            const cancelButton =
+                event.target.closest(
+                    ".cancel-order-btn"
+                );
+
+            if (cancelButton) {
+
+                const orderId =
+                    cancelButton.dataset.orderId;
+
+                cancelOrder(orderId);
+
+                return;
+            }
+
+
+            const sellButton =
+                event.target.closest(
+                    ".sell-order-btn"
+                );
+
+            if (sellButton) {
+
+                const orderId =
+                    sellButton.dataset.orderId;
+
+                sellOrder(orderId);
+            }
+        }
+    );
+
+
+    // ---------------------------------------------------------
+    // FILTER EVENTS
+    // ---------------------------------------------------------
+
+    searchInput.addEventListener(
+        "input",
+        renderOrders
+    );
+
+    filterType.addEventListener(
+        "change",
+        renderOrders
+    );
+
+    filterBrand.addEventListener(
+        "change",
+        renderOrders
+    );
+
+    sortBy.addEventListener(
+        "change",
+        renderOrders
+    );
+
+
+    // ---------------------------------------------------------
+    // INITIALIZE
+    // ---------------------------------------------------------
+
+    loadStats();
+    loadOrders();
+
+</script>
 </body>
 </html>
