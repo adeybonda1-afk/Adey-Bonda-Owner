@@ -328,6 +328,36 @@
     transform: scale(0.96);
 }
 
+.add-btn {
+    position: fixed;
+    bottom: 90px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #1f7b9e, #14607e);
+    color: white;
+    font-size: 2rem;
+    font-weight: 300;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(31,123,158,0.4);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.add-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 8px 30px rgba(31,123,158,0.5);
+}
+
+.add-btn:active {
+    transform: scale(0.95);
+}
+
 /* Disabled state for both buttons */
 .order-actions button:disabled {
     opacity: 0.5;
@@ -526,6 +556,10 @@
             </div>
         </div>
     </div>
+
+    <button class="add-btn" onclick="window.location.href = 'product input.html'">
+        <i class="fas fa-plus"></i>
+    </button>
 
     <!-- Navigation -->
     <nav>
