@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control · Adey Bonda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f4f7fc;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eef5fb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        header h2 {
+            color: #0b2a3b;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h2 i {
+            color: #1f7b9e;
+            font-size: 1.8rem;
+        }
+
+        .header-badge {
+            background: #e1edf7;
+            color: #1f5a7a;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            padding: 16px 24px;
+            background: white;
+            border-bottom: 1px solid #eef5fb;
+            position: sticky;
+            top: 76px;
+            z-index: 49;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f4f7fc;
+            color: #6f8fa8;
+            font-family: inherit;
+        }
+
+        .tab-btn:hover {
+            background: #e8eef6;
+            color: #1d4058;
+        }
+
+        .tab-btn.active {
+            background: #1f7b9e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(31,123,158,0.25);
+        }
+
+        .tab-btn i {
+            font-size: 1rem;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            gap: 0;
+            padding: 0 24px 24px;
+            min-height: calc(100vh - 180px);
+            position: relative;
+        }
+
+        /* List */
+        .list {
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e7eef6;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        .list-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eef5fb;
+            font-weight: 600;
+            color: #0b2a3b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 2;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .list-header .count {
+            font-size: 0.8rem;
+            color: #6f8fa8;
+            font-weight: 400;
+        }
+
+        .list-item {
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0f5fb;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .list-item:hover {
+            background: #f8fbfe;
+        }
+
+        .list-item.selected {
+            background: #e8f0fe;
+            border-left: 3px solid #1f7b9e;
+        }
+
+        .list-item .item-name {
+            font-weight: 600;
+            color: #0b2a3b;
+            font-size: 0.95rem;
+        }
+
+        .list-item .item-sub {
+            font-size: 0.85rem;
+            color: #6f8fa8;
+            margin-top: 2px;
+        }
+
+        .list-item .item-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #8aaec9;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .list-item .item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Details Panel - Fixed for Mobile */
+        .details-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .details-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .details-panel {
+            background: white;
+            border-radius: 28px;
+            padding: 24px 28px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .details-panel .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #6f8fa8;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 4px 8px;
+            border-radius: 50%;
+        }
+
+        .details-panel .close-btn:hover {
+            background: #f0f6fd;
+            color: #1d4058;
+        }
+
+        .details-panel .empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6f8fa8;
+        }
+
+        .details-panel .empty i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .details-panel .empty .sub {
+            font-size: 0.9rem;
+            color: #a8bccf;
+            margin-top: 4px;
+        }
+
+        .details-panel h2 {
+            font-size: 1.3rem;
+            color: #0b2a3b;
+            margin-bottom: 16px;
+            padding-right: 30px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 20px;
+        }
+
+        .detail-row {
+            padding: 6px 0;
+            border-bottom: 1px solid #f0f5fb;
+        }
+
+        .detail-row .detail-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6f8fa8;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .detail-row .detail-value {
+            color: #0b2a3b;
+            font-weight: 500;
+            word-break: break-word;
+            font-size: 0.95rem;
+        }
+
+        .detail-row.full {
+            grid-column: 1 / -1;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #eef5fb;
+            flex-wrap: wrap;
+        }
+
+        .detail-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            flex: 1;
+            justify-content: center;
+            min-width: 100px;
+        }
+
+        .detail-actions .delete-btn {
+            background: #fee8e8;
+            color: #c0392b;
+        }
+
+        .detail-actions .delete-btn:hover {
+            background: #fdd0d0;
+            transform: translateY(-2px);
+        }
+
+        .detail-actions .message-btn {
+            background: #1f7b9e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(31,123,158,0.2);
+        }
+
+        .detail-actions .message-btn:hover {
+            background: #14607e;
+            transform: translateY(-2px);
+        }
+
+        /* Loading & Empty States */
+        .loading {
+            padding: 40px 20px;
+            text-align: center;
+            color: #6f8fa8;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+            color: #1f7b9e;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 20px rgba(0,0,0,0.08);
+            border-top: 1px solid #eef5fb;
+            z-index: 100;
+        }
+
+        nav a {
+            color: #6f8fa8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        nav a.current {
+            background: #1f7b9e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(31,123,158,0.25);
+        }
+
+        nav a:hover:not(.current) {
+            background: #f0f6fd;
+            color: #1f5a7a;
+        }
+
+        /* Responsive - Desktop */
+        @media (min-width: 769px) {
+            .layout {
+                gap: 0;
+            }
+
+            .list {
+                width: 40%;
+                min-width: 320px;
+                border-radius: 20px 0 0 20px;
+                border-right: none;
+                max-height: 70vh;
+            }
+
+            .list-header {
+                border-radius: 20px 0 0 0;
+            }
+
+            .details-overlay {
+                display: block !important;
+                position: static;
+                background: none;
+                backdrop-filter: none;
+                padding: 0;
+                flex: 1;
+                animation: none;
+                z-index: auto;
+            }
+
+            .details-overlay.active {
+                display: block !important;
+            }
+
+            .details-panel {
+                background: white;
+                border-radius: 0 20px 20px 0;
+                border: 1px solid #e7eef6;
+                border-left: none;
+                padding: 24px 28px;
+                max-width: 100%;
+                max-height: 70vh;
+                overflow-y: auto;
+                box-shadow: none;
+                animation: none;
+                height: 100%;
+            }
+
+            .details-panel .close-btn {
+                display: none;
+            }
+
+            .details-panel .empty {
+                padding: 60px 20px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .tabs {
+                padding: 12px 16px;
+                top: 68px;
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                white-space: nowrap;
+                flex: 1;
+                justify-content: center;
+            }
+
+            .layout {
+                padding: 0 16px 16px;
+                flex-direction: column;
+            }
+
+            .list {
+                border-radius: 20px;
+                max-height: 60vh;
+            }
+
+            .list-header {
+                border-radius: 20px 20px 0 0;
+            }
+
+            .details-overlay {
+                padding: 12px;
+            }
+
+            .details-panel {
+                padding: 20px;
+                max-height: 80vh;
+                border-radius: 24px;
+                margin: auto;
+            }
+
+            .details-panel h2 {
+                font-size: 1.2rem;
+                padding-right: 30px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+
+            .detail-actions button {
+                flex: 1;
+                min-width: 80px;
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+
+            header {
+                padding: 16px;
+            }
+
+            header h2 {
+                font-size: 1.3rem;
+            }
+
+            .list-item {
+                padding: 12px 16px;
+            }
+
+            .list-item .item-name {
+                font-size: 0.9rem;
+            }
+
+            .list-item .item-meta {
+                font-size: 0.75rem;
+                gap: 8px;
+            }
+
+            nav a {
+                font-size: 0.75rem;
+                padding: 6px 10px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .details-panel {
+                padding: 16px;
+                max-height: 85vh;
+            }
+
+            .detail-actions {
+                flex-direction: column;
+            }
+
+            .detail-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2><i class="fas fa-sliders-h"></i> Control</h2>
+        <span class="header-badge"><i class="fas fa-crown"></i> Owner</span>
+    </header>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button id="productTab" class="tab-btn active">
+            <i class="fas fa-box"></i> Products
+        </button>
+        <button id="userTab" class="tab-btn">
+            <i class="fas fa-users"></i> Users
+        </button>
+    </div>
+
+    <!-- Layout -->
+    <div class="layout">
+
+        <!-- List -->
+        <div id="list" class="list">
+            <div class="list-header">
+                <span>Products</span>
+                <span class="count" id="listCount">0 items</span>
+            </div>
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                Loading products...
+            </div>
+        </div>
+
+        <!-- Details Overlay (Mobile) / Panel (Desktop) -->
+        <div id="detailsOverlay" class="details-overlay">
+            <div class="details-panel" id="detailsPanel">
+                <button class="close-btn" id="closeDetailsBtn">&times;</button>
+                <div id="detailsContent">
+                    <div class="empty">
+                        <i class="fas fa-hand-pointer"></i>
+                        Select an item
+                        <div class="sub">Click on a product or user from the list</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="home.html"><i class="fas fa-home"></i> Home</a>
+        <a href="message.html"><i class="fas fa-comment-dots"></i> Message</a>
+        <a href="analysis.html"><i class="fas fa-chart-bar"></i> Analysis</a>
+        <a href="control.html" class="current"><i class="fas fa-cog"></i> Control</a>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onChildAdded, onChildRemoved, get, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
+            authDomain: "adey-bonda.firebaseapp.com",
+            projectId: "adey-bonda",
+            storageBucket: "adey-bonda.firebasestorage.app",
+            messagingSenderId: "820555835547",
+            appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const productTab = document.getElementById("productTab");
+        const userTab = document.getElementById("userTab");
+        const list = document.getElementById("list");
+        const detailsOverlay = document.getElementById("detailsOverlay");
+        const detailsContent = document.getElementById("detailsContent");
+        const closeDetailsBtn = document.getElementById("closeDetailsBtn");
+        const listCount = document.getElementById("listCount");
+
+        let currentMode = "product";
+        let selectedId = null;
+        let productItems = new Map();
+        let userItems = new Map();
+        let isMobile = window.innerWidth <= 768;
+
+        // Check if mobile on resize
+        window.addEventListener('resize', () => {
+            isMobile = window.innerWidth <= 768;
+            if (!isMobile && detailsOverlay.classList.contains('active')) {
+                // Keep it open on desktop
+            }
+        });
+
+        // Close details
+        function closeDetails() {
+            detailsOverlay.classList.remove('active');
+            selectedId = null;
+            // Remove selected class from list items
+            document.querySelectorAll('.list-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+        }
+
+        closeDetailsBtn.addEventListener('click', closeDetails);
+
+        // Click outside to close (mobile only)
+        detailsOverlay.addEventListener('click', (e) => {
+            if (isMobile && e.target === detailsOverlay) {
+                closeDetails();
+            }
+        });
+
+        // Tab switching
+        productTab.addEventListener("click", () => {
+            if (currentMode === "product") return;
+            currentMode = "product";
+            selectedId = null;
+            productTab.classList.add("active");
+            userTab.classList.remove("active");
+            closeDetails();
+            loadProducts();
+        });
+
+        userTab.addEventListener("click", () => {
+            if (currentMode === "user") return;
+            currentMode = "user";
+            selectedId = null;
+            userTab.classList.add("active");
+            productTab.classList.remove("active");
+            closeDetails();
+            loadUsers();
+        });
+
+        // Load Products
+        function loadProducts() {
+            list.innerHTML = `
+                <div class="list-header">
+                    <span>Products</span>
+                    <span class="count" id="listCount">0 items</span>
+                </div>
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    Loading products...
+                </div>
+            `;
+            productItems.clear();
+
+            const productsRef = ref(database, "AdeyBonda/products");
+            let firstItem = true;
+
+            onChildAdded(productsRef, snapshot => {
+                const id = snapshot.key;
+                if (id === "selledProducts") return;
+
+                const data = snapshot.val();
+                const product = data?.productinformation || data || {};
+                productItems.set(id, { id, product });
+
+                if (firstItem) {
+                    list.innerHTML = `
+                        <div class="list-header">
+                            <span>Products</span>
+                            <span class="count" id="listCount">${productItems.size} items</span>
+                        </div>
+                    `;
+                    firstItem = false;
+                }
+
+                addProductToList(id, product);
+                updateListCount();
+            }, error => {
+                console.error("Product loading error:", error);
+                list.innerHTML = `
+                    <div class="list-header">
+                        <span>Products</span>
+                        <span class="count" id="listCount">0 items</span>
+                    </div>
+                    <div class="empty" style="padding:40px 20px;text-align:center;color:#6f8fa8;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
+                        Failed to load products
+                    </div>
+                `;
+            });
+
+            onChildRemoved(productsRef, snapshot => {
+                const id = snapshot.key;
+                if (id === "selledProducts") return;
+                productItems.delete(id);
+                const element = document.querySelector(`[data-product-id="${id}"]`);
+                if (element) element.remove();
+                if (selectedId === id) {
+                    closeDetails();
+                }
+                updateListCount();
+            });
+        }
+
+        function addProductToList(id, product) {
+            const item = document.createElement("div");
+            item.className = "list-item";
+            item.dataset.productId = id;
+
+            item.innerHTML = `
+                <div class="item-name">${escapeHtml(product.name || "Unnamed product")}</div>
+                <div class="item-sub">${escapeHtml(product.brand || "No brand")}</div>
+                <div class="item-meta">
+                    <span><i class="fas fa-tag"></i> ${escapeHtml(product.type || "N/A")}</span>
+                    <span><i class="fas fa-money-bill"></i> ${product.price ?? "N/A"} ETB</span>
+                    <span><i class="fas fa-box"></i> ${product.quantity ?? "N/A"}</span>
+                </div>
+            `;
+
+            item.addEventListener("click", () => {
+                // If same item clicked on mobile, close it
+                if (isMobile && selectedId === id && detailsOverlay.classList.contains('active')) {
+                    closeDetails();
+                    return;
+                }
+                selectProduct(id, product);
+            });
+
+            list.appendChild(item);
+        }
+
+        function updateListCount() {
+            const countEl = document.getElementById("listCount");
+            if (countEl) {
+                countEl.textContent = `${currentMode === "product" ? productItems.size : userItems.size} items`;
+            }
+        }
+
+        // Select Product
+        async function selectProduct(id, cachedProduct) {
+            selectedId = id;
+
+            // Update selected class
+            document.querySelectorAll(".list-item").forEach(item => {
+                item.classList.toggle("selected", item.dataset.productId === id);
+            });
+
+            // Show loading in details
+            detailsContent.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    Loading product information...
+                </div>
+            `;
+
+            // Show overlay (mobile) or update panel (desktop)
+            detailsOverlay.classList.add('active');
+
+            try {
+                const productRef = ref(database, `AdeyBonda/products/${id}/productinformation`);
+                const snapshot = await get(productRef);
+                if (!snapshot.exists()) {
+                    detailsContent.innerHTML = `
+                        <div class="empty">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Product no longer exists
+                            <div class="sub">The product may have been deleted</div>
+                        </div>
+                    `;
+                    return;
+                }
+                showProductDetails(id, snapshot.val());
+            } catch (error) {
+                console.error(error);
+                detailsContent.innerHTML = `
+                    <div class="empty">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Failed to load product
+                        <div class="sub">Please try again later</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Show Product Details
+        function showProductDetails(id, product) {
+            detailsContent.innerHTML = `
+                <h2><i class="fas fa-box" style="color:#1f7b9e;margin-right:10px;"></i>${escapeHtml(product.name || "Unnamed product")}</h2>
+                <div class="detail-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">Product ID</span>
+                        <span class="detail-value">${escapeHtml(id)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Name</span>
+                        <span class="detail-value">${escapeHtml(product.name || "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Price</span>
+                        <span class="detail-value">${escapeHtml(product.price ?? "N/A")} ETB</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Quantity</span>
+                        <span class="detail-value">${escapeHtml(product.quantity ?? "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Quantity Type</span>
+                        <span class="detail-value">${escapeHtml(product.quantityType || "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Type</span>
+                        <span class="detail-value">${escapeHtml(product.type || "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Brand</span>
+                        <span class="detail-value">${escapeHtml(product.brand || "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Size</span>
+                        <span class="detail-value">${escapeHtml(product.size || "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Gender</span>
+                        <span class="detail-value">${escapeHtml(product.gender || "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Color</span>
+                        <span class="detail-value">${escapeHtml(product.color || "N/A")}</span>
+                    </div>
+                    <div class="detail-row full">
+                        <span class="detail-label">Description</span>
+                        <span class="detail-value">${escapeHtml(product.description || "No description")}</span>
+                    </div>
+                </div>
+                <div class="detail-actions">
+                    <button class="delete-btn" id="deleteProductBtn"><i class="fas fa-trash-alt"></i> Delete</button>
+                </div>
+            `;
+
+            document.getElementById("deleteProductBtn").addEventListener("click", () => deleteProduct(id));
+        }
+
+        // Delete Product
+        async function deleteProduct(id) {
+            if (!confirm("Are you sure you want to delete this product?")) return;
+            try {
+                await remove(ref(database, `AdeyBonda/products/${id}`));
+                closeDetails();
+                detailsContent.innerHTML = `
+                    <div class="empty">
+                        <i class="fas fa-check-circle" style="color:#27ae60;"></i>
+                        Product deleted successfully
+                        <div class="sub">The product has been removed from the database</div>
+                    </div>
+                `;
+                // Keep overlay open to show success message
+                detailsOverlay.classList.add('active');
+                setTimeout(() => {
+                    if (isMobile) closeDetails();
+                }, 1500);
+            } catch (error) {
+                console.error("Delete product error:", error);
+                alert("Failed to delete product.");
+            }
+        }
+
+        // Load Users
+        function loadUsers() {
+            list.innerHTML = `
+                <div class="list-header">
+                    <span>Users</span>
+                    <span class="count" id="listCount">0 items</span>
+                </div>
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    Loading users...
+                </div>
+            `;
+            userItems.clear();
+
+            const usersRef = ref(database, "AdeyBonda/users");
+            let firstItem = true;
+
+            onChildAdded(usersRef, snapshot => {
+                const id = snapshot.key;
+                const user = snapshot.val() || {};
+                userItems.set(id, { id, user });
+
+                if (firstItem) {
+                    list.innerHTML = `
+                        <div class="list-header">
+                            <span>Users</span>
+                            <span class="count" id="listCount">${userItems.size} items</span>
+                        </div>
+                    `;
+                    firstItem = false;
+                }
+
+                addUserToList(id, user);
+                updateListCount();
+            }, error => {
+                console.error("User loading error:", error);
+                list.innerHTML = `
+                    <div class="list-header">
+                        <span>Users</span>
+                        <span class="count" id="listCount">0 items</span>
+                    </div>
+                    <div class="empty" style="padding:40px 20px;text-align:center;color:#6f8fa8;">
+                        <i class="fas fa-exclamation-triangle" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
+                        Failed to load users
+                    </div>
+                `;
+            });
+        }
+
+        function addUserToList(id, user) {
+            const item = document.createElement("div");
+            item.className = "list-item";
+            item.dataset.userId = id;
+
+            item.innerHTML = `
+                <div class="item-name">${escapeHtml(user.name || "Unnamed user")}</div>
+                <div class="item-sub">${escapeHtml(user.phone || "No phone number")}</div>
+                <div class="item-meta">
+                    <span><i class="fas fa-id-card"></i> ${escapeHtml(id.slice(-8))}</span>
+                </div>
+            `;
+
+            item.addEventListener("click", () => {
+                if (isMobile && selectedId === id && detailsOverlay.classList.contains('active')) {
+                    closeDetails();
+                    return;
+                }
+                selectUser(id, user);
+            });
+
+            list.appendChild(item);
+        }
+
+        // Select User
+        function selectUser(id, user) {
+            selectedId = id;
+            document.querySelectorAll(".list-item").forEach(item => {
+                item.classList.toggle("selected", item.dataset.userId === id);
+            });
+            detailsOverlay.classList.add('active');
+            showUserDetails(id, user);
+        }
+
+        // Show User Details
+        function showUserDetails(id, user) {
+            detailsContent.innerHTML = `
+                <h2><i class="fas fa-user" style="color:#1f7b9e;margin-right:10px;"></i>${escapeHtml(user.name || "Unnamed user")}</h2>
+                <div class="detail-grid">
+                    <div class="detail-row">
+                        <span class="detail-label">User ID</span>
+                        <span class="detail-value">${escapeHtml(id)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Name</span>
+                        <span class="detail-value">${escapeHtml(user.name || "N/A")}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Phone</span>
+                        <span class="detail-value">${escapeHtml(user.phone || "N/A")}</span>
+                    </div>
+                    ${user.email ? `
+                        <div class="detail-row">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value">${escapeHtml(user.email)}</span>
+                        </div>
+                    ` : ''}
+                    ${user.address ? `
+                        <div class="detail-row full">
+                            <span class="detail-label">Address</span>
+                            <span class="detail-value">${escapeHtml(user.address)}</span>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="detail-actions">
+                    <button class="message-btn" id="messageUserBtn"><i class="fas fa-comment"></i> Message</button>
+                </div>
+            `;
+
+            document.getElementById("messageUserBtn").addEventListener("click", () => {
+                sessionStorage.setItem("chatUserId", id);
+                location.href = "chat-detail.html";
+            });
+        }
+
+        // Escape HTML
+        function escapeHtml(value) {
+            if (value === null || value === undefined) return "N/A";
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        // Start with products
+        loadProducts();
+    </script>
+</body>
+</html>
