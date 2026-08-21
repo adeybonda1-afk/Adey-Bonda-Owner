@@ -11,15 +11,12 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: #f4f7fc;
             min-height: 100vh;
             padding-bottom: 80px;
         }
-
-        /* Header */
         header {
             background: white;
             padding: 20px 24px;
@@ -31,7 +28,6 @@
             top: 0;
             z-index: 50;
         }
-
         header h2 {
             color: #0b2a3b;
             font-size: 1.6rem;
@@ -40,12 +36,10 @@
             align-items: center;
             gap: 10px;
         }
-
         header h2 i {
             color: #1f7b9e;
             font-size: 1.8rem;
         }
-
         .header-badge {
             background: #e1edf7;
             color: #1f5a7a;
@@ -54,15 +48,12 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
-
-        /* Stats Cards */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             padding: 20px 24px;
         }
-
         .stat-card {
             background: white;
             padding: 20px 24px;
@@ -71,39 +62,31 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             transition: 0.2s;
         }
-
         .stat-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.04);
         }
-
         .stat-card .stat-icon {
             font-size: 2rem;
             color: #1f7b9e;
             margin-bottom: 8px;
         }
-
         .stat-card .stat-number {
             font-size: 2.2rem;
             font-weight: 800;
             color: #0b2a3b;
         }
-
         .stat-card .stat-label {
             color: #6f8fa8;
             font-size: 0.9rem;
             font-weight: 500;
         }
-
         .stat-card.users .stat-icon { color: #8e44ad; }
         .stat-card.products .stat-icon { color: #e67e22; }
         .stat-card.selled .stat-icon { color: #27ae60; }
-
-        /* Orders Section */
         .orders-section {
             padding: 0 24px 24px;
         }
-
         .section-header {
             display: flex;
             flex-wrap: wrap;
@@ -112,7 +95,6 @@
             gap: 16px;
             margin-bottom: 20px;
         }
-
         .section-header h3 {
             font-size: 1.3rem;
             font-weight: 700;
@@ -121,18 +103,15 @@
             align-items: center;
             gap: 8px;
         }
-
         .section-header h3 i {
             color: #1f7b9e;
         }
-
         .controls {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             align-items: center;
         }
-
         .controls select, .controls input {
             padding: 10px 16px;
             border: 1px solid #d6e1ed;
@@ -145,23 +124,18 @@
             font-family: inherit;
             color: #1d4058;
         }
-
         .controls select:focus, .controls input:focus {
             border-color: #1f7b9e;
             box-shadow: 0 0 0 3px rgba(31,123,158,0.1);
         }
-
         .controls input::placeholder {
             color: #a8bccf;
         }
-
-        /* Orders Grid */
         .orders-grid {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
         .order-item {
             background: white;
             padding: 16px 20px;
@@ -174,13 +148,11 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
             width: 100%;
         }
-
         .order-item:hover {
             border-color: #cbddee;
             transform: translateX(4px);
             box-shadow: 0 4px 16px rgba(0,0,0,0.04);
         }
-
         .order-thumbnail {
             width: 60px;
             height: 60px;
@@ -189,7 +161,6 @@
             background: #eaf1f9;
             flex-shrink: 0;
         }
-
         .order-thumbnail-placeholder {
             width: 60px;
             height: 60px;
@@ -202,18 +173,15 @@
             font-size: 1.5rem;
             flex-shrink: 0;
         }
-
         .order-info {
             flex: 1;
             min-width: 0;
         }
-
         .order-info .order-name {
             font-weight: 600;
             color: #0b2a3b;
             font-size: 1rem;
         }
-
         .order-info .order-meta {
             font-size: 0.85rem;
             color: #6f8fa8;
@@ -222,40 +190,33 @@
             gap: 12px;
             margin-top: 2px;
         }
-
         .order-info .order-meta span {
             display: flex;
             align-items: center;
             gap: 4px;
         }
-
         .order-info .order-meta i {
             color: #1f7b9e;
             font-size: 0.75rem;
         }
-
         .order-right {
             text-align: right;
             flex-shrink: 0;
         }
-
         .order-right .order-time {
             font-size: 0.8rem;
             color: #6f8fa8;
         }
-
         .order-right .order-quantity {
             font-weight: 700;
             color: #1f7b9e;
             font-size: 1.1rem;
         }
-
         .order-right .order-quantity span {
             font-weight: 400;
             color: #6f8fa8;
             font-size: 0.8rem;
         }
-
         .empty-orders {
             text-align: center;
             padding: 60px 20px;
@@ -264,168 +225,192 @@
             border: 1px dashed #d6e1ed;
             color: #6f8fa8;
         }
-
         .empty-orders i {
             font-size: 3rem;
             opacity: 0.4;
             margin-bottom: 12px;
         }
-
-/* Order Actions - Cancel and Sell Buttons */
-.order-actions {
-    display: flex;
-    gap: 8px;
-    flex-shrink: 0;
-    align-items: center;
-}
-
-.order-actions button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 30px;
-    font-weight: 600;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: inherit;
-    white-space: nowrap;
-}
-
-.order-actions button i {
-    font-size: 0.75rem;
-}
-
-/* Cancel Button */
-.cancel-order-btn {
-    background: #fee8e8;
-    color: #c0392b;
-}
-
-.cancel-order-btn:hover:not(:disabled) {
-    background: #fdd0d0;
-    transform: scale(1.02);
-}
-
-.cancel-order-btn:active:not(:disabled) {
-    transform: scale(0.96);
-}
-
-/* Sell Button */
-.sell-order-btn {
-    background: #e1f5e8;
-    color: #1e7e34;
-}
-
-.sell-order-btn:hover:not(:disabled) {
-    background: #c8e8d3;
-    transform: scale(1.02);
-}
-
-.sell-order-btn:active:not(:disabled) {
-    transform: scale(0.96);
-}
-
-.add-btn {
-    position: fixed;
-    bottom: 90px;
-    right: 24px;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(135deg, #1f7b9e, #14607e);
-    color: white;
-    font-size: 2rem;
-    font-weight: 300;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(31,123,158,0.4);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-}
-
-.add-btn:hover {
-    transform: scale(1.1) rotate(90deg);
-    box-shadow: 0 8px 30px rgba(31,123,158,0.5);
-}
-
-.add-btn:active {
-    transform: scale(0.95);
-}
-
-.settings-btn {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: none;
-    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-    color: white;
-    font-size: 1.4rem;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-}
-
-.settings-btn:hover {
-    transform: rotate(90deg) scale(1.08);
-    box-shadow: 0 8px 28px rgba(108, 92, 231, 0.5);
-}
-
-.settings-btn:active {
-    transform: scale(0.92);
-}
-
-/* Disabled state for both buttons */
-.order-actions button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-/* Responsive adjustments for the buttons */
-@media (max-width: 640px) {
-    .order-item {
-        flex-wrap: wrap;
-    }
-
-    .order-actions {
-        width: 100%;
-        justify-content: flex-end;
-        padding-top: 8px;
-        border-top: 1px solid #eef5fb;
-        margin-top: 4px;
-    }
-
-    .order-actions button {
-        padding: 6px 14px;
-        font-size: 0.75rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .order-actions button {
-        padding: 5px 10px;
-        font-size: 0.7rem;
-    }
-
-    .order-actions button i {
-        font-size: 0.65rem;
-    }
-}
-
-        /* Navigation */
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+            align-items: center;
+        }
+        .order-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .order-actions button i {
+            font-size: 0.75rem;
+        }
+        .cancel-order-btn {
+            background: #fee8e8;
+            color: #c0392b;
+        }
+        .cancel-order-btn:hover:not(:disabled) {
+            background: #fdd0d0;
+            transform: scale(1.02);
+        }
+        .cancel-order-btn:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+        .sell-order-btn {
+            background: #e1f5e8;
+            color: #1e7e34;
+        }
+        .sell-order-btn:hover:not(:disabled) {
+            background: #c8e8d3;
+            transform: scale(1.02);
+        }
+        .sell-order-btn:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+        .add-btn {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #1f7b9e, #14607e);
+            color: white;
+            font-size: 2rem;
+            font-weight: 300;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(31,123,158,0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .add-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 30px rgba(31,123,158,0.5);
+        }
+        .add-btn:active {
+            transform: scale(0.95);
+        }
+        .settings-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(108, 92, 231, 0.35);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        .settings-btn:hover {
+            transform: rotate(90deg) scale(1.08);
+            box-shadow: 0 8px 28px rgba(108, 92, 231, 0.5);
+        }
+        .settings-btn:active {
+            transform: scale(0.92);
+        }
+        .order-actions button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        			/* Total Stock - Enhanced Style */
+			.stat-stock {
+			    margin-top: 12px;
+			    padding-top: 10px;
+			    border-top: 1px solid #eef5fb;
+			    display: flex;
+			    align-items: center;
+			    justify-content: space-between;
+			    font-size: 0.85rem;
+			    color: #6f8fa8;
+			}
+			
+			.stat-stock span {
+			    font-weight: 500;
+			    color: #6f8fa8;
+			}
+			
+			.stat-stock strong {
+			    font-weight: 700;
+			    font-size: 1.1rem;
+			    color: #0b2a3b;
+			    background: #f0f6fd;
+			    padding: 2px 12px;
+			    border-radius: 20px;
+			    transition: all 0.2s ease;
+			}
+			
+			.stat-stock strong:hover {
+			    background: #e1edf7;
+			    transform: scale(1.05);
+			}
+			
+			/* Optional: Add a small icon before the number */
+			.stat-stock span::before {
+			    content: "📦 ";
+			    font-size: 0.9rem;
+			}
+			
+			/* Responsive adjustment */
+			@media (max-width: 480px) {
+			    .stat-stock {
+			        font-size: 0.75rem;
+			        padding-top: 8px;
+			        margin-top: 8px;
+			    }
+			    .stat-stock strong {
+			        font-size: 0.95rem;
+			        padding: 1px 10px;
+			    }
+			}
+        
+        
+        @media (max-width: 640px) {
+            .order-item {
+                flex-wrap: wrap;
+            }
+            .order-actions {
+                width: 100%;
+                justify-content: flex-end;
+                padding-top: 8px;
+                border-top: 1px solid #eef5fb;
+                margin-top: 4px;
+            }
+            .order-actions button {
+                padding: 6px 14px;
+                font-size: 0.75rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .order-actions button {
+                padding: 5px 10px;
+                font-size: 0.7rem;
+            }
+            .order-actions button i {
+                font-size: 0.65rem;
+            }
+        }
         nav {
             position: fixed;
             bottom: 0;
@@ -439,7 +424,6 @@
             border-top: 1px solid #eef5fb;
             z-index: 100;
         }
-
         nav a {
             color: #6f8fa8;
             text-decoration: none;
@@ -452,19 +436,15 @@
             align-items: center;
             gap: 6px;
         }
-
         nav a.current {
             background: #1f7b9e;
             color: white;
             box-shadow: 0 4px 12px rgba(31,123,158,0.25);
         }
-
         nav a:hover:not(.current) {
             background: #f0f6fd;
             color: #1f5a7a;
         }
-
-        /* Responsive */
         @media (max-width: 640px) {
             header {
                 padding: 16px;
@@ -515,7 +495,6 @@
                 padding: 6px 14px;
             }
         }
-
         @media (max-width: 400px) {
             .stats-container {
                 grid-template-columns: 1fr;
@@ -524,32 +503,32 @@
     </style>
 </head>
 <body>
-
     <header>
         <h2><i class="fas fa-store-alt"></i> Adey Bonda</h2>
         <span class="header-badge"><i class="fas fa-crown"></i> Owner</span>
     </header>
-
-    <!-- Stats -->
     <div class="stats-container" id="statsContainer">
         <div class="stat-card users">
             <div class="stat-icon"><i class="fas fa-users"></i></div>
             <div class="stat-number" id="userCount">0</div>
             <div class="stat-label">Total Users</div>
         </div>
-        <div class="stat-card products">
-            <div class="stat-icon"><i class="fas fa-boxes"></i></div>
-            <div class="stat-number" id="productCount">0</div>
-            <div class="stat-label">Total Products</div>
-        </div>
+			<div class="stat-card products">
+			    <div class="stat-icon"><i class="fas fa-boxes"></i></div>
+			    <div class="stat-number" id="productCount">0</div>
+			    <div class="stat-label">Total Products</div>
+			
+			    <div class="stat-stock">
+			        <span>Total Stock</span>
+			        <strong id="totalStock">0</strong>
+			    </div>
+			</div>	
         <div class="stat-card selled">
             <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
             <div class="stat-number" id="selledCount">0</div>
             <div class="stat-label">Products Selled</div>
         </div>
     </div>
-
-    <!-- Orders -->
     <div class="orders-section">
         <div class="section-header">
             <h3><i class="fas fa-clipboard-list"></i> Pending Orders</h3>
@@ -576,7 +555,6 @@
                 </select>
             </div>
         </div>
-
         <div class="orders-grid" id="ordersContainer">
             <div class="empty-orders">
                 <i class="fas fa-inbox"></i>
@@ -585,35 +563,21 @@
             </div>
         </div>
     </div>
-
     <button class="add-btn" onclick="window.location.href = 'product input.html'">
         <i class="fas fa-plus"></i>
     </button>
-
     <button class="settings-btn" onclick="window.location.href = 'setting.html'">
         <i class="fas fa-cog"></i>
     </button>
-
-    <!-- Navigation -->
     <nav>
         <a href="home.html" class="current"><i class="fas fa-home"></i> Home</a>
         <a href="message.html"><i class="fas fa-comment-dots"></i> Message</a>
         <a href="analysis.html"><i class="fas fa-chart-bar"></i> Analysis</a>
         <a href="control.html"><i class="fas fa-cog"></i> Control</a>  
     </nav>
-
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-
-    import {
-        getDatabase,
-        ref,
-        onValue,
-        runTransaction,
-        update,
-        remove
-    } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
+    import { getDatabase, ref, onValue, runTransaction, update, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
     const firebaseConfig = {
         apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
         authDomain: "adey-bonda.firebaseapp.com",
@@ -622,272 +586,121 @@
         messagingSenderId: "820555835547",
         appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
     };
-
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
-
-    // ---------------------------------------------------------
-    // DOM ELEMENTS
-    // ---------------------------------------------------------
-
     const userCountEl = document.getElementById("userCount");
     const productCountEl = document.getElementById("productCount");
     const selledCountEl = document.getElementById("selledCount");
-
+    const totalStockEl = document.getElementById("totalStock");
     const ordersContainer = document.getElementById("ordersContainer");
-
     const searchInput = document.getElementById("searchInput");
     const filterType = document.getElementById("filterType");
     const filterBrand = document.getElementById("filterBrand");
     const sortBy = document.getElementById("sortBy");
-
-
-    // ---------------------------------------------------------
-    // STATE
-    // ---------------------------------------------------------
-
     let allOrders = [];
     let brands = new Set();
-
-    // Prevent double-click / simultaneous processing
     const processingOrders = new Set();
-
-
-    // ---------------------------------------------------------
-    // LOAD STATISTICS
-    // ---------------------------------------------------------
-
     function loadStats() {
-
-        // Users
-        const usersRef = ref(
-            database,
-            "AdeyBonda/users"
-        );
-
+        const usersRef = ref(database, "AdeyBonda/users");
         onValue(usersRef, (snapshot) => {
-
             const data = snapshot.val();
-
-            if (data) {
-                userCountEl.textContent =
-                    Object.keys(data).length;
-            } else {
-                userCountEl.textContent = "0";
-            }
+            if (data) userCountEl.textContent = Object.keys(data).length;
+            else userCountEl.textContent = "0";
         });
-
-
-        // Products
-        const productsRef = ref(
-            database,
-            "AdeyBonda/products"
-        );
-
-        onValue(productsRef, (snapshot) => {
-
-            const data = snapshot.val();
-
-            if (!data) {
-                productCountEl.textContent = "0";
-                return;
-            }
-
-            // Do NOT count selledProducts as a product.
-            const productIds = Object.keys(data)
-                .filter(id => id !== "selledProducts");
-
-            productCountEl.textContent =
-                productIds.length;
-        });
-
-
-        // Selled products
-        const selledRef = ref(
-            database,
-            "AdeyBonda/products/selledProducts"
-        );
-
+        const productsRef = ref(database, "AdeyBonda/products");
+			onValue(productsRef, (snapshot) => {
+			    const data = snapshot.val();
+			
+			    if (!data) {
+			        productCountEl.textContent = "0";
+			        totalStockEl.textContent = "0";
+			        return;
+			    }
+			
+			    const productIds = Object.keys(data).filter(id => id !== "selledProducts");
+			
+			    productCountEl.textContent = productIds.length;
+			
+			    let totalStock = 0;
+			
+			    productIds.forEach(id => {
+			        const product = data[id];
+			
+			        if (product && product.productinformation) {
+			            totalStock += Number(product.productinformation.quantity) || 0;
+			        }
+			    });
+			
+			    totalStockEl.textContent = totalStock;
+			});
+        const selledRef = ref(database, "AdeyBonda/products/selledProducts");
         onValue(selledRef, (snapshot) => {
-
             const value = Number(snapshot.val());
-
-            selledCountEl.textContent =
-                Number.isFinite(value) ? value : 0;
+            selledCountEl.textContent = Number.isFinite(value) ? value : 0;
         });
     }
-
-
-    // ---------------------------------------------------------
-    // LOAD PENDING ORDERS
-    // ---------------------------------------------------------
-
     function loadOrders() {
-
-        const ordersRef = ref(
-            database,
-            "AdeyBonda/pending orders"
-        );
-
+        const ordersRef = ref(database, "AdeyBonda/pending orders");
         onValue(ordersRef, (snapshot) => {
-
             const data = snapshot.val();
-
             if (!data) {
-
                 allOrders = [];
                 brands.clear();
-
                 updateBrandFilter();
                 renderOrders();
-
                 return;
             }
-
             allOrders = [];
             brands.clear();
-
             for (const orderId of Object.keys(data)) {
-
                 const order = data[orderId];
-
                 if (!order) continue;
-
-                // -------------------------------------------------
-                // NEW ORDER STRUCTURE
-                //
-                // order.productInformation contains everything.
-                // We DON'T read /products here anymore.
-                // -------------------------------------------------
-
-                const product =
-                    order.productInformation;
-
+                const product = order.productInformation;
                 if (!product) {
-                    console.warn(
-                        "Order has no productInformation:",
-                        orderId
-                    );
+                    console.warn("Order has no productInformation:", orderId);
                     continue;
                 }
-
-
-                // Product ID is now inside productInformation
-                const productId =
-                    product.productId;
-
+                const productId = product.productId;
                 if (!productId) {
-                    console.warn(
-                        "Order has no productId:",
-                        orderId
-                    );
+                    console.warn("Order has no productId:", orderId);
                     continue;
                 }
-
-
-                const howMany =
-                    Number(order.HowMany);
-
-
+                const howMany = Number(order.HowMany);
                 allOrders.push({
-
                     id: orderId,
-
                     userId: order.userId,
-
                     productId: productId,
-
-                    howMany:
-                        Number.isInteger(howMany) &&
-                        howMany > 0
-                            ? howMany
-                            : 1,
-
-                    timestamp:
-                        Number(order.timestamp) ||
-                        Date.now(),
-
-                    status:
-                        order.status || "pending",
-
+                    howMany: Number.isInteger(howMany) && howMany > 0 ? howMany : 1,
+                    timestamp: Number(order.timestamp) || Date.now(),
+                    status: order.status || "pending",
                     product: product,
-
-                    name:
-                        product.name ||
-                        "Unnamed",
-
-                    type:
-                        product.type ||
-                        "Other",
-
-                    brand:
-                        product.brand ||
-                        "Unbranded",
-
-                    images:
-                        typeof product.images === "string"
-                            ? product.images
-                                .split(",")
-                                .map(image => image.trim())
-                                .filter(Boolean)
-                            : Array.isArray(product.images)
-                                ? product.images
-                                : []
+                    name: product.name || "Unnamed",
+                    type: product.type || "Other",
+                    brand: product.brand || "Unbranded",
+                    images: typeof product.images === "string"
+                        ? product.images.split(",").map(image => image.trim()).filter(Boolean)
+                        : Array.isArray(product.images) ? product.images : []
                 });
-
-
-                if (
-                    product.brand &&
-                    product.brand !== "Unbranded"
-                ) {
+                if (product.brand && product.brand !== "Unbranded") {
                     brands.add(product.brand);
                 }
             }
-
             updateBrandFilter();
             renderOrders();
         });
     }
-
-
-    // ---------------------------------------------------------
-    // UPDATE BRAND FILTER
-    // ---------------------------------------------------------
-
     function updateBrandFilter() {
-
-        const currentValue =
-            filterBrand.value;
-
-        filterBrand.innerHTML =
-            '<option value="all">All Brands</option>';
-
-        Array.from(brands)
-            .sort()
-            .forEach(brand => {
-
-                const option =
-                    document.createElement("option");
-
-                option.value = brand;
-                option.textContent = brand;
-
-                filterBrand.appendChild(option);
-            });
-
-        filterBrand.value =
-            currentValue;
+        const currentValue = filterBrand.value;
+        filterBrand.innerHTML = '<option value="all">All Brands</option>';
+        Array.from(brands).sort().forEach(brand => {
+            const option = document.createElement("option");
+            option.value = brand;
+            option.textContent = brand;
+            filterBrand.appendChild(option);
+        });
+        filterBrand.value = currentValue;
     }
-
-
-    // ---------------------------------------------------------
-    // ESCAPE HTML
-    // ---------------------------------------------------------
-    // Firebase data can contain user/product-controlled text.
-    // Don't insert it directly into innerHTML.
-
     function escapeHtml(value) {
-
         return String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -895,787 +708,194 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
-
-
-    // ---------------------------------------------------------
-    // RENDER ORDERS
-    // ---------------------------------------------------------
-
     function renderOrders() {
-
-        let filtered =
-            [...allOrders];
-
-
-        // Search
-        const search =
-            searchInput.value
-                .toLowerCase()
-                .trim();
-
+        let filtered = [...allOrders];
+        const search = searchInput.value.toLowerCase().trim();
         if (search) {
-
-            filtered =
-                filtered.filter(order =>
-
-                    order.name
-                        .toLowerCase()
-                        .includes(search) ||
-
-                    order.brand
-                        .toLowerCase()
-                        .includes(search)
-                );
+            filtered = filtered.filter(order =>
+                order.name.toLowerCase().includes(search) ||
+                order.brand.toLowerCase().includes(search) ||
+                order.productId.toLowerCase().includes(search)
+            );
         }
-
-
-        // Type filter
-        const type =
-            filterType.value;
-
-        if (type !== "all") {
-
-            filtered =
-                filtered.filter(
-                    order => order.type === type
-                );
-        }
-
-
-        // Brand filter
-        const brand =
-            filterBrand.value;
-
-        if (brand !== "all") {
-
-            filtered =
-                filtered.filter(
-                    order => order.brand === brand
-                );
-        }
-
-
-        // Sorting
-        const sort =
-            sortBy.value;
-
+        const type = filterType.value;
+        if (type !== "all") filtered = filtered.filter(order => order.type === type);
+        const brand = filterBrand.value;
+        if (brand !== "all") filtered = filtered.filter(order => order.brand === brand);
+        const sort = sortBy.value;
         switch (sort) {
-
-            case "time-desc":
-                filtered.sort(
-                    (a, b) =>
-                        b.timestamp - a.timestamp
-                );
-                break;
-
-            case "time-asc":
-                filtered.sort(
-                    (a, b) =>
-                        a.timestamp - b.timestamp
-                );
-                break;
-
-            case "name-asc":
-                filtered.sort(
-                    (a, b) =>
-                        a.name.localeCompare(b.name)
-                );
-                break;
-
-            case "name-desc":
-                filtered.sort(
-                    (a, b) =>
-                        b.name.localeCompare(a.name)
-                );
-                break;
+            case "time-desc": filtered.sort((a, b) => b.timestamp - a.timestamp); break;
+            case "time-asc": filtered.sort((a, b) => a.timestamp - b.timestamp); break;
+            case "name-asc": filtered.sort((a, b) => a.name.localeCompare(b.name)); break;
+            case "name-desc": filtered.sort((a, b) => b.name.localeCompare(a.name)); break;
         }
-
-
-        // Empty
         if (filtered.length === 0) {
-
             ordersContainer.innerHTML = `
                 <div class="empty-orders">
                     <i class="fas fa-inbox"></i>
                     <div>No orders match your filters</div>
-                    <div style="font-size: 0.85rem; margin-top: 4px;">
-                        Try adjusting your search or filters
-                    </div>
+                    <div style="font-size: 0.85rem; margin-top: 4px;">Try adjusting your search or filters</div>
                 </div>
             `;
-
             return;
         }
-
-
         let html = "";
-
-
         filtered.forEach(order => {
-
-            const firstImage =
-                order.images.length > 0
-                    ? order.images[0]
-                    : null;
-
-
-            const time =
-                new Date(
-                    order.timestamp
-                ).toLocaleString();
-
-
-            const typeIcon =
-                getTypeIcon(order.type);
-
-
-            const safeName =
-                escapeHtml(order.name);
-
-            const safeBrand =
-                escapeHtml(order.brand);
-
-            const safeType =
-                escapeHtml(order.type);
-
-            const safeProductId =
-                escapeHtml(order.productId);
-
-
+            const firstImage = order.images.length > 0 ? order.images[0] : null;
+            const time = new Date(order.timestamp).toLocaleString();
+            const typeIcon = getTypeIcon(order.type);
+            const safeName = escapeHtml(order.name);
+            const safeBrand = escapeHtml(order.brand);
+            const safeType = escapeHtml(order.type);
+            const safeProductId = escapeHtml(order.productId);
             let imageHtml;
-
             if (firstImage) {
-
-                const safeImage =
-                    encodeURIComponent(firstImage);
-
-                imageHtml = `
-                    <img
-                        src="https://lh3.googleusercontent.com/d/${safeImage}"
-                        class="order-thumbnail"
-                        alt="${safeName}"
-                        loading="lazy"
-                    />
-                `;
-
+                const safeImage = encodeURIComponent(firstImage);
+                imageHtml = `<img src="https://lh3.googleusercontent.com/d/${safeImage}" class="order-thumbnail" alt="${safeName}" loading="lazy" />`;
             } else {
-
-                imageHtml = `
-                    <div class="order-thumbnail-placeholder">
-                        <i class="fas fa-box"></i>
-                    </div>
-                `;
+                imageHtml = `<div class="order-thumbnail-placeholder"><i class="fas fa-box"></i></div>`;
             }
-
-
-            const isProcessing =
-                processingOrders.has(order.id);
-
-
+            const isProcessing = processingOrders.has(order.id);
             html += `
-
-                <div
-                    class="order-item"
-                    data-order-id="${escapeHtml(order.id)}"
-                >
-
+                <div class="order-item" data-order-id="${escapeHtml(order.id)}">
                     ${imageHtml}
-
-
                     <div class="order-info">
-
-                        <div class="order-name">
-                            ${safeName}
-                        </div>
-
+                        <div class="order-name">${safeName}</div>
                         <div class="order-meta">
-
-                            <span>
-                                <i class="fas fa-tag"></i>
-                                ${safeBrand}
-                            </span>
-
-                            <span>
-                                <i class="fas fa-layer-group"></i>
-                                ${typeIcon}
-                                ${safeType}
-                            </span>
-
-                            <span>
-                                <i class="fas fa-hashtag"></i>
-                                #${safeProductId.slice(-6)}
-                            </span>
-
+                            <span><i class="fas fa-tag"></i> ${safeBrand}</span>
+                            <span><i class="fas fa-layer-group"></i> ${typeIcon} ${safeType}</span>
+                            <span><i class="fas fa-hashtag"></i> #${safeProductId.slice(-6)}</span>
                         </div>
-
                     </div>
-
-
                     <div class="order-right">
-
-                        <div class="order-quantity">
-                            ${order.howMany}
-                            <span>items</span>
-                        </div>
-
-                        <div class="order-time">
-                            <i class="far fa-clock"></i>
-                            ${escapeHtml(time)}
-                        </div>
-
+                        <div class="order-quantity">${order.howMany} <span>items</span></div>
+                        <div class="order-time"><i class="far fa-clock"></i> ${escapeHtml(time)}</div>
                     </div>
-
-
                     <div class="order-actions">
-
-                        <button
-                            class="cancel-order-btn"
-                            data-order-id="${escapeHtml(order.id)}"
-                            ${isProcessing ? "disabled" : ""}
-                        >
-                            <i class="fas fa-times"></i>
-                            Cancel
+                        <button class="cancel-order-btn" data-order-id="${escapeHtml(order.id)}" ${isProcessing ? "disabled" : ""}>
+                            <i class="fas fa-times"></i> Cancel
                         </button>
-
-                        <button
-                            class="sell-order-btn"
-                            data-order-id="${escapeHtml(order.id)}"
-                            ${isProcessing ? "disabled" : ""}
-                        >
-                            <i class="fas fa-check"></i>
-                            Sell
+                        <button class="sell-order-btn" data-order-id="${escapeHtml(order.id)}" ${isProcessing ? "disabled" : ""}>
+                            <i class="fas fa-check"></i> Sell
                         </button>
-
                     </div>
-
                 </div>
             `;
         });
-
-
         ordersContainer.innerHTML = html;
     }
-
-
-    // ---------------------------------------------------------
-    // TYPE ICON
-    // ---------------------------------------------------------
-
     function getTypeIcon(type) {
-
-        const icons = {
-
-            "Shoes": "👟",
-            "T-Shirt": "👕",
-            "Coat": "🧥",
-            "Sweater": "🧶",
-            "Pants": "👖",
-            "Hat": "🧢",
-            "Other": "📦"
-        };
-
+        const icons = { "Shoes": "👟", "T-Shirt": "👕", "Coat": "🧥", "Sweater": "🧶", "Pants": "👖", "Hat": "🧢", "Other": "📦" };
         return icons[type] || "📦";
     }
-
-
-    // ---------------------------------------------------------
-    // CANCEL ORDER
-    // ---------------------------------------------------------
-
     async function cancelOrder(orderId) {
-
-        if (processingOrders.has(orderId)) {
-            return;
-        }
-
-        const order =
-            allOrders.find(
-                item => item.id === orderId
-            );
-
-        if (!order) {
-
-            alert(
-                "❌ Order is no longer available."
-            );
-
-            return;
-        }
-
-
-        if (order.status !== "pending") {
-
-            alert(
-                "❌ This order has already been processed."
-            );
-
-            return;
-        }
-
-
-        const confirmed =
-            confirm(
-                `Cancel this order?\n\n` +
-                `${order.name}\n` +
-                `Quantity: ${order.howMany}`
-            );
-
-        if (!confirmed) {
-            return;
-        }
-
-
+        if (processingOrders.has(orderId)) return;
+        const order = allOrders.find(item => item.id === orderId);
+        if (!order) { alert("❌ Order is no longer available."); return; }
+        if (order.status !== "pending") { alert("❌ This order has already been processed."); return; }
+        const confirmed = confirm(`Cancel this order?\n\n${order.name}\nQuantity: ${order.howMany}`);
+        if (!confirmed) return;
         processingOrders.add(orderId);
         renderOrders();
-
-
         try {
-
-            const productId =
-                order.productId;
-
-            const howMany =
-                Number(order.howMany);
-
-            const productRef =
-                ref(
-                    database,
-                    `AdeyBonda/products/${productId}`
-                );
-
-
-            // -------------------------------------------------
-            // Restore product using a transaction.
-            //
-            // If product exists:
-            //     current quantity + HowMany
-            //
-            // If product doesn't exist:
-            //     recreate it with HowMany
-            // -------------------------------------------------
-
-            const restoreResult =
-                await runTransaction(
-                    productRef,
-                    currentProduct => {
-
-                        // Product doesn't exist.
-                        if (currentProduct === null) {
-
-                            const restoredProduct = {
-                                ...order.product
-                            };
-
-
-                            // VERY IMPORTANT:
-                            // productId must NOT be inside
-                            // productinformation.
-                            delete restoredProduct.productId;
-
-
-                            // Quantity comes from the order.
-                            restoredProduct.quantity =
-                                howMany;
-
-
-                            // Recalculate quantity type.
-                            restoredProduct.quantityType =
-                                howMany === 1
-                                    ? "one"
-                                    : "multiple";
-
-
-                            return {
-                                productinformation:
-                                    restoredProduct
-                            };
-                        }
-
-
-                        // Product exists.
-                        const product =
-                            {
-                                ...currentProduct
-                            };
-
-
-                        if (
-                            !product.productinformation
-                        ) {
-
-                            product.productinformation =
-                                {};
-                        }
-
-
-                        const information =
-                            {
-                                ...product.productinformation
-                            };
-
-
-                        const currentQuantity =
-                            Number(
-                                information.quantity
-                            );
-
-
-                        const safeCurrentQuantity =
-                            Number.isFinite(
-                                currentQuantity
-                            )
-                                ? currentQuantity
-                                : 0;
-
-
-                        const newQuantity =
-                            safeCurrentQuantity +
-                            howMany;
-
-
-                        information.quantity =
-                            newQuantity;
-
-
-                        information.quantityType =
-                            newQuantity === 1
-                                ? "one"
-                                : "multiple";
-
-
-                        // Product ID should never be
-                        // inside productinformation.
-                        delete information.productId;
-
-
-                        product.productinformation =
-                            information;
-
-
-                        return product;
-                    }
-                );
-
-
-            if (!restoreResult.committed) {
-
-                throw new Error(
-                    "Could not restore the product."
-                );
-            }
-
-
-            // -------------------------------------------------
-            // Change user order to cancelled
-            // AND remove pending order.
-            //
-            // Same orderId is now used in both places.
-            // -------------------------------------------------
-
-            const userId =
-                order.userId;
-
-            if (!userId) {
-
-                throw new Error(
-                    "Order has no userId."
-                );
-            }
-
-
-            const userOrderPath =
-                `AdeyBonda/users/${userId}/orders/${orderId}`;
-
-            const pendingOrderPath =
-                `AdeyBonda/pending orders/${orderId}`;
-
-
-            await update(
-                ref(database),
-                {
-                    [`${userOrderPath}/status`]:
-                        "cancelled",
-
-                    [`${userOrderPath}/cancelledAt`]:
-                        Date.now(),
-
-                    [pendingOrderPath]:
-                        null
+            const productId = order.productId;
+            const howMany = Number(order.howMany);
+            const productRef = ref(database, `AdeyBonda/products/${productId}`);
+            const restoreResult = await runTransaction(productRef, currentProduct => {
+                if (currentProduct === null) {
+                    const restoredProduct = { ...order.product };
+                    delete restoredProduct.productId;
+                    restoredProduct.quantity = howMany;
+                    restoredProduct.quantityType = howMany === 1 ? "one" : "multiple";
+                    return { productinformation: restoredProduct };
                 }
-            );
-
-
-            alert(
-                "✅ Order cancelled and product restored."
-            );
-
+                const product = { ...currentProduct };
+                if (!product.productinformation) product.productinformation = {};
+                const information = { ...product.productinformation };
+                const currentQuantity = Number(information.quantity);
+                const safeCurrentQuantity = Number.isFinite(currentQuantity) ? currentQuantity : 0;
+                const newQuantity = safeCurrentQuantity + howMany;
+                information.quantity = newQuantity;
+                information.quantityType = newQuantity === 1 ? "one" : "multiple";
+                delete information.productId;
+                product.productinformation = information;
+                return product;
+            });
+            if (!restoreResult.committed) throw new Error("Could not restore the product.");
+            const userId = order.userId;
+            if (!userId) throw new Error("Order has no userId.");
+            const userOrderPath = `AdeyBonda/users/${userId}/orders/${orderId}`;
+            const pendingOrderPath = `AdeyBonda/pending orders/${orderId}`;
+            await update(ref(database), {
+                [`${userOrderPath}/status`]: "cancelled",
+                [`${userOrderPath}/cancelledAt`]: Date.now(),
+                [pendingOrderPath]: null
+            });
+            alert("✅ Order cancelled and product restored.");
         } catch (error) {
-
-            console.error(
-                "Cancel order error:",
-                error
-            );
-
-            alert(
-                "❌ Failed to cancel the order.\n\n" +
-                error.message
-            );
-
+            console.error("Cancel order error:", error);
+            alert("❌ Failed to cancel the order.\n\n" + error.message);
         } finally {
-
             processingOrders.delete(orderId);
-
             renderOrders();
         }
     }
-
-
-    // ---------------------------------------------------------
-    // SELL ORDER
-    // ---------------------------------------------------------
-
     async function sellOrder(orderId) {
-
-        if (processingOrders.has(orderId)) {
-            return;
-        }
-
-
-        const order =
-            allOrders.find(
-                item => item.id === orderId
-            );
-
-
-        if (!order) {
-
-            alert(
-                "❌ Order is no longer available."
-            );
-
-            return;
-        }
-
-
-        if (order.status !== "pending") {
-
-            alert(
-                "❌ This order has already been processed."
-            );
-
-            return;
-        }
-
-
-        const confirmed =
-            confirm(
-                `Mark this order as SOLD?\n\n` +
-                `${order.name}\n` +
-                `Quantity: ${order.howMany}`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
+        if (processingOrders.has(orderId)) return;
+        const order = allOrders.find(item => item.id === orderId);
+        if (!order) { alert("❌ Order is no longer available."); return; }
+        if (order.status !== "pending") { alert("❌ This order has already been processed."); return; }
+        const confirmed = confirm(`Mark this order as SOLD?\n\n${order.name}\nQuantity: ${order.howMany}`);
+        if (!confirmed) return;
         processingOrders.add(orderId);
         renderOrders();
-
-
         try {
-
-            const userId =
-                order.userId;
-
-            if (!userId) {
-
-                throw new Error(
-                    "Order has no userId."
-                );
-            }
-
-
-            const howMany =
-                Number(order.howMany);
-
-
-            if (
-                !Number.isInteger(howMany) ||
-                howMany < 1
-            ) {
-
-                throw new Error(
-                    "Invalid order quantity."
-                );
-            }
-
-
-            // -------------------------------------------------
-            // Increase total sold products safely.
-            // -------------------------------------------------
-
-            const selledRef =
-                ref(
-                    database,
-                    "AdeyBonda/products/selledProducts"
-                );
-
-
-            const soldResult =
-                await runTransaction(
-                    selledRef,
-                    currentValue => {
-
-                        const current =
-                            Number(currentValue);
-
-
-                        const safeCurrent =
-                            Number.isFinite(current)
-                                ? current
-                                : 0;
-
-
-                        return safeCurrent + howMany;
-                    }
-                );
-
-
-            if (!soldResult.committed) {
-
-                throw new Error(
-                    "Could not update sold products count."
-                );
-            }
-
-
-            // -------------------------------------------------
-            // Update customer order + delete pending order.
-            // -------------------------------------------------
-
-            const userOrderPath =
-                `AdeyBonda/users/${userId}/orders/${orderId}`;
-
-            const pendingOrderPath =
-                `AdeyBonda/pending orders/${orderId}`;
-
-
-            await update(
-                ref(database),
-                {
-                    [`${userOrderPath}/status`]:
-                        "selled",
-
-                    [`${userOrderPath}/selledAt`]:
-                        Date.now(),
-
-                    [pendingOrderPath]:
-                        null
-                }
-            );
-
-
-            alert(
-                "✅ Order marked as sold."
-            );
-
+            const userId = order.userId;
+            if (!userId) throw new Error("Order has no userId.");
+            const howMany = Number(order.howMany);
+            if (!Number.isInteger(howMany) || howMany < 1) throw new Error("Invalid order quantity.");
+            const selledRef = ref(database, "AdeyBonda/products/selledProducts");
+            const soldResult = await runTransaction(selledRef, currentValue => {
+                const current = Number(currentValue);
+                const safeCurrent = Number.isFinite(current) ? current : 0;
+                return safeCurrent + howMany;
+            });
+            if (!soldResult.committed) throw new Error("Could not update sold products count.");
+            const userOrderPath = `AdeyBonda/users/${userId}/orders/${orderId}`;
+            const pendingOrderPath = `AdeyBonda/pending orders/${orderId}`;
+            await update(ref(database), {
+                [`${userOrderPath}/status`]: "selled",
+                [`${userOrderPath}/selledAt`]: Date.now(),
+                [pendingOrderPath]: null
+            });
+            alert("✅ Order marked as sold.");
         } catch (error) {
-
-            console.error(
-                "Sell order error:",
-                error
-            );
-
-            alert(
-                "❌ Failed to sell the order.\n\n" +
-                error.message
-            );
-
+            console.error("Sell order error:", error);
+            alert("❌ Failed to sell the order.\n\n" + error.message);
         } finally {
-
             processingOrders.delete(orderId);
-
             renderOrders();
         }
     }
-
-
-    // ---------------------------------------------------------
-    // ORDER BUTTON EVENTS
-    // ---------------------------------------------------------
-    // Event delegation means we don't need to add listeners
-    // to every button individually.
-
-    ordersContainer.addEventListener(
-        "click",
-        event => {
-
-            const cancelButton =
-                event.target.closest(
-                    ".cancel-order-btn"
-                );
-
-            if (cancelButton) {
-
-                const orderId =
-                    cancelButton.dataset.orderId;
-
-                cancelOrder(orderId);
-
-                return;
-            }
-
-
-            const sellButton =
-                event.target.closest(
-                    ".sell-order-btn"
-                );
-
-            if (sellButton) {
-
-                const orderId =
-                    sellButton.dataset.orderId;
-
-                sellOrder(orderId);
-            }
+    ordersContainer.addEventListener("click", event => {
+        const cancelButton = event.target.closest(".cancel-order-btn");
+        if (cancelButton) {
+            const orderId = cancelButton.dataset.orderId;
+            cancelOrder(orderId);
+            return;
         }
-    );
-
-
-    // ---------------------------------------------------------
-    // FILTER EVENTS
-    // ---------------------------------------------------------
-
-    searchInput.addEventListener(
-        "input",
-        renderOrders
-    );
-
-    filterType.addEventListener(
-        "change",
-        renderOrders
-    );
-
-    filterBrand.addEventListener(
-        "change",
-        renderOrders
-    );
-
-    sortBy.addEventListener(
-        "change",
-        renderOrders
-    );
-
-
-    // ---------------------------------------------------------
-    // INITIALIZE
-    // ---------------------------------------------------------
-
+        const sellButton = event.target.closest(".sell-order-btn");
+        if (sellButton) {
+            const orderId = sellButton.dataset.orderId;
+            sellOrder(orderId);
+        }
+    });
+    searchInput.addEventListener("input", renderOrders);
+    filterType.addEventListener("change", renderOrders);
+    filterBrand.addEventListener("change", renderOrders);
+    sortBy.addEventListener("change", renderOrders);
     loadStats();
     loadOrders();
-
 </script>
 </body>
 </html>
