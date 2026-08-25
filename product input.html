@@ -207,7 +207,7 @@
             background: #f0f6fd;
             color: #1f5a7a;
         }    
-
+    
     @media (max-width: 480px) {
       .row-duo {
         grid-template-columns: 1fr;
@@ -221,9 +221,19 @@
 <div class="card">
   <h2>🛍️ Adey Bonda <small>add product</small></h2>
 
-  <h3>📸 Select images</h3>
-  <div id="gallery"></div>
-  <div class="hint">↳ click to select / deselect (max 5 recommended)</div>
+	<h3>📂 Product type</h3>
+	
+	<select id="type">
+	  <option value="Shoes">Shoes</option>
+	  <option value="T-Shirt">T-Shirt</option>
+	  <option value="Sweater">Sweater</option>
+	  <option value="Pants">Pants</option>
+	  <option value="Other">Other</option>
+	</select>
+	
+	<h3>📸 Select images</h3>
+	<div id="gallery"></div>
+	<div class="hint">↳ click to select / deselect (max 5 recommended)</div>
 
   <div class="field-grid">
     <input id="name" placeholder="Product name *" value="">
@@ -240,13 +250,6 @@
     <input id="quantity" type="number" placeholder="How many? (stock)">
 
     <div class="row-duo">
-      <select id="type">
-        <option value="Shoes">Shoes</option>
-        <option value="T-Shirt">T-Shirt</option>
-        <option value="Sweater">Sweater</option>
-        <option value="Pants">Pants</option>
-        <option value="Other">Other</option>
-      </select>
       <select id="gender">
         <option value="Male">Male</option>
         <option value="Female">Female</option>
@@ -268,9 +271,18 @@
     </nav>
 
 <script type="module">
-  // ----- Firebase & Drive config -----
+  // =========================================================
+  // FIREBASE
+  // =========================================================
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-  import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+  import {
+    getDatabase,
+    ref,
+    push,
+    set
+  } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
 
   const firebaseConfig = {
     apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
@@ -281,123 +293,641 @@
     appId: "1:820555835547:web:efc14ad017ab4d206f7e3e"
   };
 
+
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
 
-  const DRIVE_API_KEY = "AIzaSyAh41ifWIw442I30oVF2GleJsPdKYbXDU4";
-  const FOLDER_ID = "1jFxWcF-2E_jdBLZOdBwL5bXUP-YrCmqS";
 
-  // ----- DOM refs -----
-  const gallery = document.getElementById("gallery");
-  const nameInput = document.getElementById("name");
-  const priceInput = document.getElementById("price");
-  const sizeInput = document.getElementById("size");
-  const typeSelect = document.getElementById("type");
-  const genderSelect = document.getElementById("gender");
-  const brandInput = document.getElementById("brand");
-  const quantityInput = document.getElementById("quantity");
-  const doneBtn = document.getElementById("doneBtn");
+  // =========================================================
+  // GOOGLE DRIVE
+  // =========================================================
 
-  const selectedImages = []; // stores file IDs
+  const DRIVE_API_KEY =
+    "AIzaSyAh41ifWIw442I30oVF2GleJsPdKYbXDU4";
 
-  // ----- load images from Google Drive -----
-  async function loadImages() {
-    try {
-      const url = `https://www.googleapis.com/drive/v3/files?q='${FOLDER_ID}'+in+parents+and+mimeType+contains+'image/'&fields=files(id,name)&key=${DRIVE_API_KEY}`;
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Drive fetch failed");
-      const data = await response.json();
 
-      if (!data.files || data.files.length === 0) {
-        gallery.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:#4d7a9a; padding:20px;">📂 No images found in folder</div>`;
-        return;
-      }
+  // ---------------------------------------------------------
+  // FOLDER IDs
+  //
+  // Put the Google Drive folder ID for each product type here.
+  // ---------------------------------------------------------
 
-      data.files.forEach(file => {
-        const img = document.createElement("img");
-        img.src = `https://lh3.googleusercontent.com/d/${file.id}`;
-        img.alt = file.name || "product";
-        img.loading = "lazy";
+  const folderId = {
+    Shoes: "1jFxWcF-2E_jdBLZOdBwL5bXUP-YrCmqS",
+    "T-Shirt": "1sujaYcYTyIkTCefEw0ukkytApHOae8H1",
+    Sweater: "124mjNR33K1v8r-ekDvDk4LvEu45F_JHV",
+    Pants: "1Hcj5Ez6I-1h8W-0H3FrjGObWt5huBrMy",
+    Other: "YOUR_OTHER_FOLDER_ID"
+  };
 
-        img.addEventListener("click", () => {
-          img.classList.toggle("selected");
-          const id = file.id;
-          if (selectedImages.includes(id)) {
-            const idx = selectedImages.indexOf(id);
-            if (idx !== -1) selectedImages.splice(idx, 1);
-          } else {
-            selectedImages.push(id);
-          }
-          // optional: visual counter
-        });
 
-        gallery.appendChild(img);
-      });
-    } catch (err) {
-      console.warn("Drive load error:", err);
-      gallery.innerHTML = `<div style="grid-column:1/-1; color:#b33; padding:12px;">⚠️ Could not load images. Check Drive folder & API key.</div>`;
-    }
-  }
-  loadImages();
+  // =========================================================
+  // DOM ELEMENTS
+  // =========================================================
 
-  // ----- toggle quantity field -----
-  const qtyRadios = document.querySelectorAll("[name=qtyType]");
-  qtyRadios.forEach(r => {
-    r.addEventListener("change", () => {
-      const show = document.querySelector("[name=qtyType]:checked")?.value === "multiple";
-      quantityInput.classList.toggle("show", show);
-      if (!show) {
-        quantityInput.value = "";
-        quantityInput.style.display = "none";
-      } else {
-        quantityInput.style.display = "block";
-      }
-    });
-  });
-  // initial state (One selected)
-  quantityInput.style.display = "none";
+  const gallery =
+    document.getElementById("gallery");
 
-  // ----- DONE: push to Firebase -----
-  doneBtn.addEventListener("click", async () => {
-    // basic validation
-    const name = nameInput.value.trim();
-    const price = priceInput.value.trim();
-    if (!name) { alert("Please enter a product name."); return; }
-    if (!price || isNaN(Number(price))) { alert("Please enter a valid price."); return; }
-    if (selectedImages.length === 0) { alert("Please select at least one image."); return; }
+  const nameInput =
+    document.getElementById("name");
 
-    const qtyType = document.querySelector("[name=qtyType]:checked")?.value || "one";
-    const qtyValue = (qtyType === "multiple") ? quantityInput.value.trim() : "1";
-    if (qtyType === "multiple" && (!qtyValue || isNaN(Number(qtyValue)) || Number(qtyValue) < 0)) {
-      alert("Please enter a valid stock quantity (number).");
+  const priceInput =
+    document.getElementById("price");
+
+  const sizeInput =
+    document.getElementById("size");
+
+  const typeSelect =
+    document.getElementById("type");
+
+  const genderSelect =
+    document.getElementById("gender");
+
+  const brandInput =
+    document.getElementById("brand");
+
+  const quantityInput =
+    document.getElementById("quantity");
+
+  const doneBtn =
+    document.getElementById("doneBtn");
+
+
+  // =========================================================
+  // SELECTED IMAGES
+  // =========================================================
+
+  // Stores Google Drive image IDs
+  const selectedImages = [];
+
+
+  // =========================================================
+  // CURRENT FOLDER
+  // =========================================================
+
+  /*
+    The default type is Shoes.
+
+    currentFolderId contains the actual Google Drive folder ID.
+  */
+
+  let currentFolderId = folderId.Shoes;
+
+  // IMPORTANT:
+  // The select contains "Shoes", not the folder ID.
+  typeSelect.value = "Shoes";
+
+
+  // =========================================================
+  // CHANGE PRODUCT TYPE
+  // =========================================================
+
+  typeSelect.addEventListener("change", async () => {
+
+    const selectedType = typeSelect.value;
+
+    // Get the folder ID belonging to the selected type
+    currentFolderId = folderId[selectedType];
+
+
+    // Clear previously selected images
+    selectedImages.length = 0;
+
+
+    // Remove old images from gallery
+    gallery.innerHTML = "";
+
+
+    // Check if this type has a folder
+    if (!currentFolderId) {
+
+      gallery.innerHTML = `
+        <div style="
+          grid-column:1/-1;
+          text-align:center;
+          color:#b33;
+          padding:20px;
+        ">
+          ⚠️ No Google Drive folder is configured for
+          "${selectedType}".
+        </div>
+      `;
+
       return;
     }
 
-    const product = {
-      productinformation: {
-        images: selectedImages.join(","),
-        name: name,
-        price: price,
-        quantityType: qtyType,
-        quantity: qtyType === "multiple" ? qtyValue : "1",
-        size: sizeInput.value.trim() || "N/A",
-        type: typeSelect.value,
-        brand: brandInput.value.trim() || "unbranded",
-        gender: genderSelect.value,
-        timestamp: new Date().toISOString()
-      }
-    };
+
+    // Load images from the new folder
+    await loadImages(currentFolderId);
+  });
+
+
+  // =========================================================
+  // LOAD IMAGES FROM GOOGLE DRIVE
+  // =========================================================
+
+  async function loadImages(folderID) {
+
+    // Clear gallery
+    gallery.innerHTML = "";
+
+
+    // Clear selected images
+    selectedImages.length = 0;
+
+
+    // Loading message
+    gallery.innerHTML = `
+      <div
+        id="loadingMessage"
+        style="
+          grid-column:1/-1;
+          text-align:center;
+          color:#4d7a9a;
+          padding:20px;
+        "
+      >
+        📂 Loading images...
+      </div>
+    `;
+
 
     try {
-      const productRef = push(ref(database, "AdeyBonda/products"));
-      await set(productRef, product);
-      alert("✅ Product added successfully!");
-      location.reload();
-    } catch (err) {
-      console.error("Firebase error:", err);
-      alert("❌ Error saving product. Check console.");
+
+      // Google Drive API URL
+      const url =
+        `https://www.googleapis.com/drive/v3/files` +
+        `?q='${folderID}'+in+parents+and+mimeType+contains+'image/'` +
+        `&fields=files(id,name)` +
+        `&key=${DRIVE_API_KEY}`;
+
+
+      // Request files
+      const response = await fetch(url);
+
+
+      if (!response.ok) {
+        throw new Error("Drive fetch failed");
+      }
+
+
+      const data = await response.json();
+
+
+      // Remove loading message
+      gallery.innerHTML = "";
+
+
+      // No images
+      if (!data.files || data.files.length === 0) {
+
+        gallery.innerHTML = `
+          <div style="
+            grid-column:1/-1;
+            text-align:center;
+            color:#4d7a9a;
+            padding:20px;
+          ">
+            📂 No images found in this folder.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      // =====================================================
+      // LOAD IMAGES ONE BY ONE
+      // =====================================================
+
+      for (const file of data.files) {
+
+        await loadSingleImage(file);
+
+        /*
+          Small delay between images.
+
+          This makes the images appear gradually instead
+          of all appearing at exactly the same time.
+        */
+
+        await delay(150);
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Google Drive error:",
+        error
+      );
+
+
+      gallery.innerHTML = `
+        <div style="
+          grid-column:1/-1;
+          color:#b33;
+          padding:12px;
+          text-align:center;
+        ">
+          ⚠️ Could not load images.
+          <br>
+          Check your Google Drive folder ID and API key.
+        </div>
+      `;
     }
+  }
+
+
+  // =========================================================
+  // LOAD ONE IMAGE
+  // =========================================================
+
+  function loadSingleImage(file) {
+
+    return new Promise((resolve) => {
+
+      const img =
+        document.createElement("img");
+
+
+      // Google Drive image URL
+      img.src =
+        `https://lh3.googleusercontent.com/d/${file.id}`;
+
+
+      img.alt =
+        file.name || "product";
+
+
+      /*
+        We intentionally do NOT use lazy loading.
+
+        We want each image to load one by one.
+      */
+
+      img.loading = "eager";
+
+
+      // =====================================================
+      // IMAGE LOADED
+      // =====================================================
+
+      img.addEventListener("load", () => {
+
+        gallery.appendChild(img);
+
+        resolve();
+      });
+
+
+      // =====================================================
+      // IMAGE ERROR
+      // =====================================================
+
+      img.addEventListener("error", () => {
+
+        console.warn(
+          "Could not load image:",
+          file.name
+        );
+
+        // Continue to next image
+        resolve();
+      });
+
+
+      // =====================================================
+      // IMAGE CLICK
+      // =====================================================
+
+      img.addEventListener("click", () => {
+
+        img.classList.toggle("selected");
+
+
+        const id = file.id;
+
+
+        // Already selected
+        if (selectedImages.includes(id)) {
+
+          const index =
+            selectedImages.indexOf(id);
+
+
+          if (index !== -1) {
+            selectedImages.splice(index, 1);
+          }
+
+        }
+
+        // Not selected yet
+        else {
+
+          selectedImages.push(id);
+        }
+
+
+        console.log(
+          "Selected images:",
+          selectedImages
+        );
+      });
+
+    });
+  }
+
+
+  // =========================================================
+  // DELAY FUNCTION
+  // =========================================================
+
+  function delay(milliseconds) {
+
+    return new Promise(resolve => {
+      setTimeout(resolve, milliseconds);
+    });
+  }
+
+
+  // =========================================================
+  // INITIAL LOAD
+  // =========================================================
+
+  /*
+    At first:
+
+    typeSelect.value = "Shoes"
+
+    currentFolderId = folderId.Shoes
+
+    So the gallery loads the Shoes folder.
+  */
+
+  loadImages(currentFolderId);
+
+
+  // =========================================================
+  // QUANTITY
+  // =========================================================
+
+  const qtyRadios =
+    document.querySelectorAll(
+      "[name=qtyType]"
+    );
+
+
+  qtyRadios.forEach(radio => {
+
+    radio.addEventListener("change", () => {
+
+      const selectedQtyType =
+        document.querySelector(
+          "[name=qtyType]:checked"
+        )?.value;
+
+
+      const show =
+        selectedQtyType === "multiple";
+
+
+      quantityInput.classList.toggle(
+        "show",
+        show
+      );
+
+
+      if (!show) {
+
+        quantityInput.value = "";
+
+        quantityInput.style.display =
+          "none";
+
+      } else {
+
+        quantityInput.style.display =
+          "block";
+      }
+
+    });
+
   });
+
+
+  // Initial quantity state
+  quantityInput.style.display = "none";
+
+
+  // =========================================================
+  // ADD PRODUCT
+  // =========================================================
+
+  doneBtn.addEventListener(
+    "click",
+    async () => {
+
+      // -----------------------------------------------------
+      // Basic information
+      // -----------------------------------------------------
+
+      const name =
+        nameInput.value.trim();
+
+
+      const price =
+        priceInput.value.trim();
+
+
+      if (!name) {
+
+        alert(
+          "Please enter a product name."
+        );
+
+        return;
+      }
+
+
+      if (
+        !price ||
+        isNaN(Number(price))
+      ) {
+
+        alert(
+          "Please enter a valid price."
+        );
+
+        return;
+      }
+
+
+      // -----------------------------------------------------
+      // Images
+      // -----------------------------------------------------
+
+      if (
+        selectedImages.length === 0
+      ) {
+
+        alert(
+          "Please select at least one image."
+        );
+
+        return;
+      }
+
+
+      // -----------------------------------------------------
+      // Quantity
+      // -----------------------------------------------------
+
+      const qtyType =
+        document.querySelector(
+          "[name=qtyType]:checked"
+        )?.value || "one";
+
+
+      const qtyValue =
+        qtyType === "multiple"
+          ? quantityInput.value.trim()
+          : "1";
+
+
+      if (
+        qtyType === "multiple" &&
+        (
+          !qtyValue ||
+          isNaN(Number(qtyValue)) ||
+          Number(qtyValue) < 0
+        )
+      ) {
+
+        alert(
+          "Please enter a valid stock quantity."
+        );
+
+        return;
+      }
+
+
+      // -----------------------------------------------------
+      // Product data
+      // -----------------------------------------------------
+
+      const product = {
+
+        productinformation: {
+
+          // Selected Google Drive images
+          images:
+            selectedImages.join(","),
+
+          // Product name
+          name:
+            name,
+
+          // Price
+          price:
+            price,
+
+          // Quantity type
+          quantityType:
+            qtyType,
+
+          // Quantity
+          quantity:
+            qtyType === "multiple"
+              ? qtyValue
+              : "1",
+
+          // Size
+          size:
+            sizeInput.value.trim() ||
+            "N/A",
+
+          // Product type
+          type:
+            typeSelect.value,
+
+          // Brand
+          brand:
+            brandInput.value.trim() ||
+            "unbranded",
+
+          // Gender
+          gender:
+            genderSelect.value,
+
+          // Folder ID used for this product
+          folderId:
+            currentFolderId,
+
+          // Time
+          timestamp:
+            new Date().toISOString()
+        }
+      };
+
+
+      // -----------------------------------------------------
+      // SAVE TO FIREBASE
+      // -----------------------------------------------------
+
+      try {
+
+        doneBtn.disabled = true;
+
+        doneBtn.textContent =
+          "Adding product...";
+
+
+        const productRef =
+          push(
+            ref(
+              database,
+              "AdeyBonda/products"
+            )
+          );
+
+
+        await set(
+          productRef,
+          product
+        );
+
+
+        alert(
+          "✅ Product added successfully!"
+        );
+
+
+        location.reload();
+
+
+      } catch (error) {
+
+        console.error(
+          "Firebase error:",
+          error
+        );
+
+
+        alert(
+          "❌ Error saving product. Check console."
+        );
+
+
+        doneBtn.disabled = false;
+
+        doneBtn.textContent =
+          "✓ Add product";
+      }
+
+    }
+  );
+
 </script>
 </body>
 </html>
