@@ -240,7 +240,7 @@
 
     <div class="row-duo">
       <input id="price" type="number" placeholder="Price (ETB)" step="0.01">
-      <input id="size" placeholder="Size (e.g. M, 42, One size)">
+      <select id="size"></select>
     </div>
 
     <div class="radio-group">
@@ -340,6 +340,18 @@
   const typeSelect =
     document.getElementById("type");
 
+  const sizeOptions = {
+    clothing: ["S", "M", "L", "XL", "XXL", "One size"],
+    shoes: Array.from({ length: 19 }, (_, i) => String(i + 30)).concat("One size"),
+    pants: ["S", "M", "L", "XL", "XXL", ...Array.from({ length: 21 }, (_, i) => String(i + 28)), "One size"],
+    other: ["S", "M", "L", "XL", "XXL", ...Array.from({ length: 19 }, (_, i) => String(i + 30)), "One size"]
+  };
+
+  function updateSizeOptions(type) {
+    const options = type === "Shoes" ? sizeOptions.shoes : type === "Pants" ? sizeOptions.pants : type === "Other" ? sizeOptions.other : sizeOptions.clothing;
+    sizeInput.innerHTML = '<option value="">Select size</option>' + options.map(size => `<option value="${size}">${size}</option>`).join("");
+  }
+
   const genderSelect =
     document.getElementById("gender");
 
@@ -376,6 +388,7 @@
   // IMPORTANT:
   // The select contains "Shoes", not the folder ID.
   typeSelect.value = "Shoes";
+  updateSizeOptions(typeSelect.value);
 
 
   // =========================================================
@@ -385,6 +398,7 @@
   typeSelect.addEventListener("change", async () => {
 
     const selectedType = typeSelect.value;
+    updateSizeOptions(selectedType);
 
     // Get the folder ID belonging to the selected type
     currentFolderId = folderId[selectedType];
