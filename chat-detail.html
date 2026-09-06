@@ -247,7 +247,7 @@
                 padding: 10px 16px;
                 font-size: 0.85rem;
             }
-            
+
         }
     </style>
 </head>
@@ -357,11 +357,12 @@
                     return;
                 }
 
-					const messages = Object.entries(data)
-					    .filter(([id]) => id !== "lastMessage")
-					    .map(([id, val]) => ({ id, ...val }))
-					    .filter(msg => msg.message !== undefined && msg.message !== null)
-					    .sort((a, b) => a.time - b.time);
+                // CRITICAL FIX: Filter out the lastMessage node explicitly
+                const messages = Object.entries(data)
+                    .filter(([key]) => key !== "lastMessage") // Exclude lastMessage node
+                    .map(([id, val]) => ({ id, ...val }))
+                    .filter(msg => msg.message !== undefined && msg.message !== null && msg.message !== "")
+                    .sort((a, b) => (a.time || 0) - (b.time || 0));
 
                 if (messages.length === 0) {
                     chatBox.innerHTML = `
@@ -373,6 +374,9 @@
                     `;
                     return;
                 }
+
+                // Track unread messages to mark as seen
+                const unreadMessages = [];
 
                 messages.forEach(msg => {
                     const div = document.createElement("div");
@@ -389,16 +393,9 @@
                         minute: "2-digit"
                     });
 
-                    // Auto mark as seen (if message is from user and not seen)
+                    // Collect unread messages from user (not from owner)
                     if (!isMe && !msg.seen) {
-                        update(ref(db, `AdeyBonda/messages/${userId}/${msg.id}`), {
-                            seen: true
-                        });
-                        
-                        // Update lastMessage seen status
-                        update(ref(db, `AdeyBonda/messages/${userId}/lastMessage`), {
-                            seen: true
-                        });
+                        unreadMessages.push(msg.id);
                     }
 
                     let seenMark = "";
@@ -416,6 +413,21 @@
                     chatBox.appendChild(div);
                 });
 
+                // Mark all unread messages as seen in a single batch
+                if (unreadMessages.length > 0) {
+                    const updates = {};
+                    unreadMessages.forEach(msgId => {
+                        updates[`${msgId}/seen`] = true;
+                    });
+                    
+                    // Also update lastMessage if it exists and is unread
+                    if (data.lastMessage && !data.lastMessage.seen && data.lastMessage.from !== ownerId) {
+                        updates['lastMessage/seen'] = true;
+                    }
+                    
+                    update(messagesRef, updates);
+                }
+
                 chatBox.scrollTop = chatBox.scrollHeight;
             });
         }
@@ -426,14 +438,17 @@
             if (!text) return;
 
             // Send as Owner (Bonda)
-            push(messagesRef, {
+            const newMessageRef = push(messagesRef);
+            const messageData = {
                 from: ownerId,
                 to: userId,
                 message: text,
                 time: Date.now(),
                 seen: false
-            });
+            };
             
+            set(newMessageRef, messageData);
+
             // Update last message
             set(ref(db, `AdeyBonda/messages/${userId}/lastMessage`), {
                 from: ownerId,
@@ -456,8 +471,6 @@
         // Initialize
         loadUserInfo();
         listenMessages();
-
-
     </script>
 </body>
 </html>
