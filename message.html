@@ -408,7 +408,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
@@ -451,98 +451,76 @@
             return new Date(timestamp).toLocaleDateString();
         }
 
-        // Load conversations
+        // Load conversations efficiently.
+        // The old version made 3 Firebase reads PER USER and waited for them
+        // one after another. We now load users + all conversations in parallel
+        // and calculate everything from the two live snapshots.
+        let usersData = {};
+        let messagesData = {};
+        let usersLoaded = false;
+        let messagesLoaded = false;
+
         function loadConversations() {
-            const messagesRef = ref(database, 'AdeyBonda/messages');
-            
-            onValue(messagesRef, async (snapshot) => {
-                const data = snapshot.val();
-                
-                if (!data) {
-                    messagesContainer.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-comment-slash"></i>
-                            <div>No conversations yet</div>
-                            <div class="empty-sub">When users message you, they'll appear here</div>
-                        </div>
-                    `;
-                    return;
-                }
+            messagesContainer.innerHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <div style="margin-top: 12px;">Loading conversations...</div>
+                </div>
+            `;
 
-                const userIds = Object.keys(data);
-                allConversations = [];
+            onValue(ref(database, 'AdeyBonda/users'), (snapshot) => {
+                usersData = snapshot.val() || {};
+                usersLoaded = true;
+                rebuildConversations();
+            }, handleLoadError);
 
-                // Show loading
-                messagesContainer.innerHTML = `
-                    <div class="loading-state">
-                        <i class="fas fa-spinner"></i>
-                        <div style="margin-top: 12px;">Loading conversations...</div>
-                    </div>
-                `;
+            onValue(ref(database, 'AdeyBonda/messages'), (snapshot) => {
+                messagesData = snapshot.val() || {};
+                messagesLoaded = true;
+                rebuildConversations();
+            }, handleLoadError);
+        }
 
-                // Load each user's conversation
-                for (const userId of userIds) {
-                    try {
-                        // Get user info
-                        const userRef = ref(database, `AdeyBonda/users/${userId}`);
-                        const userSnap = await get(userRef);
-                        const userData = userSnap.val() || {};
+        function rebuildConversations() {
+            if (!usersLoaded || !messagesLoaded) return;
 
-                        // Get last message
-                        const lastMsgRef = ref(database, `AdeyBonda/messages/${userId}/lastMessage`);
-                        const lastMsgSnap = await get(lastMsgRef);
-                        const lastMsg = lastMsgSnap.val() || null;
+            const userIds = Object.keys(messagesData);
+            allConversations = userIds.map((userId) => {
+                const userData = usersData[userId] || {};
+                const conversation = messagesData[userId] || {};
+                const lastMsg = conversation.lastMessage || null;
 
-                        // Get unread count
-                        const messagesRef_user = ref(database, `AdeyBonda/messages/${userId}`);
-                        const messagesSnap = await get(messagesRef_user);
-                        const messagesData = messagesSnap.val() || {};
-                        
-                        let unreadCount = 0;
-                        if (messagesData && typeof messagesData === 'object') {
-                            // Count messages where seen is false and from is not the owner
-                            const msgKeys = Object.keys(messagesData);
-                            for (const key of msgKeys) {
-                                const msg = messagesData[key];
-                                if (msg && msg.from === userId && msg.seen === false) {
-                                    unreadCount++;
-                                }
-                            }
-                        }
-
-                        allConversations.push({
-                            userId: userId,
-                            name: userData.name || 'Unknown User',
-                            phoneNumber: userData.phoneNumber || '',
-                            lastMessage: lastMsg ? lastMsg.message : null,
-                            lastMessageTime: lastMsg ? lastMsg.time : null,
-                            unreadCount: unreadCount
-                        });
-
-                    } catch (error) {
-                        console.error('Error loading conversation:', error);
+                let unreadCount = 0;
+                for (const [key, msg] of Object.entries(conversation)) {
+                    if (key === 'lastMessage') continue;
+                    if (msg && msg.from === userId && msg.seen === false) {
+                        unreadCount++;
                     }
                 }
 
-                // Sort by last message time (newest first)
-                allConversations.sort((a, b) => {
-                    const timeA = a.lastMessageTime || 0;
-                    const timeB = b.lastMessageTime || 0;
-                    return timeB - timeA;
-                });
-
-                renderConversations();
-
-            }, (error) => {
-                console.error('Error loading messages:', error);
-                messagesContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <div>Error loading conversations</div>
-                        <div class="empty-sub">Please try again later</div>
-                    </div>
-                `;
+                return {
+                    userId,
+                    name: userData.name || 'Unknown User',
+                    phoneNumber: userData.phone || userData.phoneNumber || '',
+                    lastMessage: lastMsg?.message ?? null,
+                    lastMessageTime: Number(lastMsg?.time) || 0,
+                    unreadCount
+                };
             });
+
+            allConversations.sort((a, b) => b.lastMessageTime - a.lastMessageTime);
+            renderConversations();
+        }
+
+        function handleLoadError(error) {
+            console.error('Error loading messages:', error);
+            messagesContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>Error loading conversations</div>
+                    <div class="empty-sub">Please try again later</div>
+                </div>
+            `;
         }
 
         // Render conversations
