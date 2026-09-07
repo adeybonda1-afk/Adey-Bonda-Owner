@@ -15,6 +15,7 @@ module.exports = async (req, res) => {
 
     const correctId = String(idSnap.val() ?? "");
     const correctPassword = String(passSnap.val() ?? "");
+alert(correctId, correctPassword);
     if (id !== correctId || password !== correctPassword) {
       return sendJson(res, 401, { ok: false, error: "Invalid Owner ID or password" });
     }
