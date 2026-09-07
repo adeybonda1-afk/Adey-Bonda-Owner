@@ -353,23 +353,6 @@
         const togglePassword = document.getElementById("togglePassword");
         const loginForm = document.getElementById("loginForm");
 
-        let rightId = "";
-        let rightPassword = "";
-
-        // Load credentials
-        async function loadCredentials() {
-            try {
-                const snapshotId = await get(ref(db, "AdeyBonda/Owner/Id"));
-                if (snapshotId.exists()) rightId = snapshotId.val();
-                else console.log("No ID found");
-
-                const snapshotPass = await get(ref(db, "AdeyBonda/Owner/Password"));
-                if (snapshotPass.exists()) rightPassword = snapshotPass.val();
-                else console.log("No Password found");
-            } catch (error) {
-                showError("Failed to load credentials. Please try again.");
-            }
-        }
 
         // Show error
         function showError(message) {
@@ -407,15 +390,23 @@
             doneBtn.disabled = true;
             errorDisplayer.classList.remove("show");
 
-            // Simulate delay for better UX
-            await new Promise(resolve => setTimeout(resolve, 800));
+            try {
+                const response = await fetch("/api/owner-login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id, password })
+                });
 
-            // Check credentials            
-            if (id == rightId && password == rightPassword) {
-                // Success - redirect                
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok || !result.ok || !result.token) {
+                    throw new Error(result.error || "Invalid ID or Password.");
+                }
+
+                localStorage.setItem("ownerAccessToken", result.token);
+                localStorage.setItem("ownerLoggedIn", "true");
                 window.location.href = "home.html";
-            } else {
-                showError("Invalid ID or Password. Please try again.");
+            } catch (error) {
+                showError(error.message || "Login failed. Please try again.");
                 doneBtn.classList.remove("loading");
                 doneBtn.disabled = false;
                 passwordInput.value = "";
@@ -434,9 +425,6 @@
         passwordInput.addEventListener("keypress", (e) => {
             if (e.key === "Enter") loginForm.dispatchEvent(new Event("submit"));
         });
-
-        // Load credentials on page load
-        loadCredentials();
 
         // Focus on ID input
         setTimeout(() => idInput.focus(), 300);
