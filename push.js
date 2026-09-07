@@ -201,7 +201,7 @@ export async function setupCustomerPush(user) {
 export async function setupOwnerPush() {
   try {
     if (!("Notification" in window)) return;
-    if (!localStorage.getItem("ownerAccessToken")) return;
+
     if (Notification.permission === "granted") {
       await enablePush("owner");
     } else if (Notification.permission === "default") {
