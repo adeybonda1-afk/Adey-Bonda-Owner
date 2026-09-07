@@ -282,6 +282,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, ref, push, onValue, update, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { notifyUser } from "./push.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
@@ -433,7 +434,7 @@
         }
 
         // Send message (as Owner)
-        function sendMessage() {
+        async function sendMessage() {
             const text = input.value.trim();
             if (!text) return;
 
@@ -447,10 +448,10 @@
                 seen: false
             };
             
-            set(newMessageRef, messageData);
+            await set(newMessageRef, messageData);
 
             // Update last message
-            set(ref(db, `AdeyBonda/messages/${userId}/lastMessage`), {
+            await set(ref(db, `AdeyBonda/messages/${userId}/lastMessage`), {
                 from: ownerId,
                 to: userId,
                 message: text,
@@ -460,6 +461,12 @@
 
             input.value = "";
             input.focus();
+
+            try {
+                await notifyUser(userId, "owner_message", { message: text });
+            } catch (notificationError) {
+                console.warn("Message sent, but customer notification failed:", notificationError);
+            }
         }
 
         // Event listeners

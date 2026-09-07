@@ -578,6 +578,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getDatabase, ref, onValue, runTransaction, update, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { setupOwnerPush } from "./push.js";
     const firebaseConfig = {
         apiKey: "AIzaSyBpLcSFmn1gNTklHu2eiebDYtXpq0qIhlM",
         authDomain: "adey-bonda.firebaseapp.com",
@@ -588,6 +589,10 @@
     };
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
+    if (!localStorage.getItem("ownerAccessToken")) {
+        window.location.replace("index.html");
+    }
+    setupOwnerPush();
     const userCountEl = document.getElementById("userCount");
     const productCountEl = document.getElementById("productCount");
     const selledCountEl = document.getElementById("selledCount");
