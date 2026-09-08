@@ -1,9 +1,9 @@
-const { services, sendJson, ownerFromReq, hashId } = require("./_firebaseAdmin");
+const { services, sendJson, hashId } = require("./_firebaseAdmin");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return sendJson(res, 405, { ok: false, error: "Method not allowed" });
   try {
-    if (!ownerFromReq(req)) return sendJson(res, 401, { ok: false, error: "Invalid owner session" });
+    
     const installationId = String(req.body?.installationId || "").trim();
     if (!installationId) return sendJson(res, 400, { ok: false, error: "Missing installationId" });
     const { db } = services();
