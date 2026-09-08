@@ -85,15 +85,24 @@ async function getServiceWorker() {
 }
 
 async function sendRegistration(role, installationId, credential) {
-  const endpoint = role === "owner" ? "/api/register-owner-push" : "/api/register-push";
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${credential}`
-    },
-    body: JSON.stringify({ installationId })
-  });
+    const endpoint =
+        role === "owner"
+            ? "/api/register-owner-push"
+            : "/api/register-push";
+
+    const headers = {
+        "Content-Type": "application/json"
+    };
+
+    if (credential) {
+        headers.Authorization = `Bearer ${credential}`;
+    }
+
+    const response = await fetch(endpoint, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ installationId })
+    });
   if (!response.ok) {
     const text = await response.text().catch(() => "");
     throw new Error(`Registration failed (${response.status}): ${text}`);
@@ -131,8 +140,7 @@ async function enablePush(role, credentialOverride = null) {
         if (!user) throw new Error("Customer account is not ready yet.");
         credential = await user.getIdToken();
       } else {
-        credential = localStorage.getItem("ownerAccessToken");
-        if (!credential) throw new Error("Owner session is missing. Please sign in again.");
+        credential = null;
       }
     }
 
