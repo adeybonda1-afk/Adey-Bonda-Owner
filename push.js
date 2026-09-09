@@ -150,7 +150,7 @@ async function enablePush(role, credentialOverride = null) {
         localStorage.setItem(role === "owner" ? "ownerPushInstallationId" : "customerPushInstallationId", installationId);
         console.log("FCM installation registered:", installationId);
       } catch (error) {
-        console.error("Could not store FCM installation ID:", error);
+        alert(`Could not store FCM installation ID: ${error}`);
       }
     });
 
