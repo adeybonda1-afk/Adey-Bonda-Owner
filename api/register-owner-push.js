@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
     });
     return sendJson(res, 200, { ok: true });
   } catch (error) {
-    console.error("register-owner-push:", error);
+    alert(`register-owner-push: ${error}`);
     return sendJson(res, 500, { ok: false, error: "Failed to register owner push installation" });
   }
 };
