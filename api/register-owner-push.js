@@ -1,4 +1,4 @@
-const { services, sendJson, hashId } = require("./_firebaseAdmin");
+const { adminServices, sendJson, hashId } = require("./_firebaseAdmin");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return sendJson(res, 405, { ok: false, error: "Method not allowed" });
@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     
     const installationId = String(req.body?.installationId || "").trim();
     if (!installationId) return sendJson(res, 400, { ok: false, error: "Missing installationId" });
-    const { db } = services();
+    const { db } = adminServices();
     const key = hashId(installationId);
     await db.ref(`AdeyBonda/pushTokens/owner/${key}`).set({
       installationId,
