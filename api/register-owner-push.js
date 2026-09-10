@@ -1,11 +1,10 @@
-const { services, sendJson, hashId } = require("./_firebaseAdmin");
-
 module.exports = async (req, res) => {
-  if (req.method !== "POST") return sendJson(res, 405, { ok: false, error: "Method not allowed" });
   try {
-    
+    if (req.method !== "POST") return res.status(405).json({ ok: false, error: "Method not allowed" });
+    const { services, hashId } = require("./_firebaseAdmin");
     const installationId = String(req.body?.installationId || "").trim();
-    if (!installationId) return sendJson(res, 400, { ok: false, error: "Missing installationId" });
+    if (!installationId) return res.status(400).json({ ok: false, error: "Missing installationId" });
+
     const { db } = services();
     const key = hashId(installationId);
     await db.ref(`AdeyBonda/pushTokens/owner/${key}`).set({
@@ -13,9 +12,9 @@ module.exports = async (req, res) => {
       updatedAt: Date.now(),
       platform: "web"
     });
-    return sendJson(res, 200, { ok: true });
+    return res.status(200).json({ ok: true });
   } catch (error) {
-    alert(`register-owner-push: ${error}`);
-    return sendJson(res, 500, { ok: false, error: "Failed to register owner push installation" });
+    console.error("register-owner-push:", error);
+    return res.status(500).json({ ok: false, error: error?.message || String(error), code: error?.code || undefined });
   }
 };
